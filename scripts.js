@@ -5,7 +5,7 @@ const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.getElementById('cube-container').appendChild(renderer.domElement);
 
-// Add OrbitControls to allow mouse interaction
+// Create OrbitControls to allow user to interact with the cube
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 // Create a cube geometry and material, then combine them into a mesh
@@ -21,14 +21,14 @@ camera.position.z = 5;
 function animate() {
     requestAnimationFrame(animate);
 
-    // Update controls so user interaction is reflected
+    // Update controls to reflect user interaction
     controls.update();
 
     renderer.render(scene, camera);
 }
 animate();
 
-// Resize handler
+// Handle window resize to keep the aspect ratio correct
 window.addEventListener('resize', () => {
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -36,4 +36,3 @@ window.addEventListener('resize', () => {
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
 });
-
