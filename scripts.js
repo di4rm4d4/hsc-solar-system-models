@@ -15,7 +15,7 @@ const cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
 // Move the camera back so we can see the cube
-camera.position.z = 5;
+camera.position.z = 10;  // Increase the camera distance
 
 // Animation loop
 function animate() {
