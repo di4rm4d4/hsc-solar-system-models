@@ -1,55 +1,60 @@
 // Set up the scene, camera, and renderer
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer();
-
-// Check if WebGL is available
-if (!renderer) {
-    alert('WebGL not supported. Please make sure your browser supports WebGL.');
-}
-
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0x000000);  // Set a background color for contrast
-document.getElementById('cube-container').appendChild(renderer.domElement);
+document.getElementById('earth-container').appendChild(renderer.domElement);
 
-// Create OrbitControls to allow user to interact with the cube
+// Create a sphere for Earth
+const earthGeometry = new THREE.SphereGeometry(5, 50, 50);
+
+// Load a texture for Earth
+const textureLoader = new THREE.TextureLoader();
+const earthMaterial = new THREE.MeshBasicMaterial({
+    map: textureLoader.load('https://threejsfundamentals.org/threejs/resources/images/earth.jpg')
+});
+
+// Combine geometry and material to create a mesh
+const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
+scene.add(earthMesh);
+
+// Add lighting (optional, if you want a more realistic look)
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+
+const pointLight = new THREE.PointLight(0xffffff, 1);
+pointLight.position.set(10, 10, 10);
+scene.add(pointLight);
+
+// Set up OrbitControls
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
-console.log("OrbitControls initialized:", controls);
+controls.enableDamping = true; // Optional: enable damping for smoother rotation
+controls.dampingFactor = 0.05;
 
-// Create a cube geometry and material, then combine them into a mesh
-const geometry = new THREE.BoxGeometry();
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });  // Use wireframe for debugging
-const cube = new THREE.Mesh(geometry, material);
-scene.add(cube);
-console.log("Cube added to scene:", cube);
+// Position the camera to start
+camera.position.z = 15;
 
-// Move the camera back so we can see the cube
-camera.position.set(0, 0, 20);  // Move camera further away from the cube
-camera.lookAt(0, 0, 0);         // Point camera at the center of the scene (where the cube is)
+// Handle window resizing
+window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+});
 
 // Animation loop
 function animate() {
     requestAnimationFrame(animate);
-    console.log("Rendering frame...");
 
-    // Rotate the cube for better visibility
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    // Rotate the Earth
+    earthMesh.rotation.y += 0.001;
 
-    // Update controls to reflect user interaction
+    // Update controls
     controls.update();
 
     // Render the scene
     renderer.render(scene, camera);
 }
+
 animate();
 
-// Handle window resize to keep the aspect ratio correct
-window.addEventListener('resize', () => {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    renderer.setSize(width, height);
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-});
 
