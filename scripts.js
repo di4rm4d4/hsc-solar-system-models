@@ -1,60 +1,68 @@
-// Set up the scene, camera, and renderer
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.getElementById('earth-container').appendChild(renderer.domElement);
-
-// Create a sphere for Earth
-const earthGeometry = new THREE.SphereGeometry(5, 50, 50);
-
-// Load a texture for Earth
-const textureLoader = new THREE.TextureLoader();
-const earthMaterial = new THREE.MeshBasicMaterial({
-    map: textureLoader.load('https://threejsfundamentals.org/threejs/resources/images/earth.jpg')
-});
-
-// Combine geometry and material to create a mesh
-const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
-scene.add(earthMesh);
-
-// Add lighting (optional, if you want a more realistic look)
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-scene.add(ambientLight);
-
-const pointLight = new THREE.PointLight(0xffffff, 1);
-pointLight.position.set(10, 10, 10);
-scene.add(pointLight);
-
-// Set up OrbitControls
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true; // Optional: enable damping for smoother rotation
-controls.dampingFactor = 0.05;
-
-// Position the camera to start
-camera.position.z = 15;
-
-// Handle window resizing
-window.addEventListener('resize', () => {
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-});
-
-// Animation loop
-function animate() {
-    requestAnimationFrame(animate);
-
-    // Rotate the Earth
-    earthMesh.rotation.y += 0.001;
-
-    // Update controls
-    controls.update();
-
-    // Render the scene
-    renderer.render(scene, camera);
+// Parameters for the scene
+const params = {
+  sunIntensity: 1.8, // brightness of the sun
+  speedFactor: 2.0   // rotation speed of the earth
 }
 
-animate();
+// Create the scene, camera, and renderer
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+camera.position.set(0, 0, 30);
+
+// Create the renderer
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.outputColorSpace = THREE.SRGBColorSpace;  // Ensure correct color space
+document.getElementById('earth-container').appendChild(renderer.domElement);
+
+// OrbitControls
+const controls = new THREE.OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+
+// Directional Light as a virtual sun
+const dirLight = new THREE.DirectionalLight(0xffffff, params.sunIntensity);
+dirLight.position.set(-50, 0, 30);
+scene.add(dirLight);
+
+// Load Earth's texture and create the mesh
+const textureLoader = new THREE.TextureLoader();
+textureLoader.load('https://threejsfundamentals.org/threejs/resources/images/earth.jpg', (texture) => {
+  const earthGeometry = new THREE.SphereGeometry(10, 64, 64);
+  const earthMaterial = new THREE.MeshStandardMaterial({ map: texture });
+  const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
+
+  // Create a group for the Earth mesh to handle rotation and tilt
+  const earthGroup = new THREE.Group();
+  earthGroup.rotation.z = THREE.MathUtils.degToRad(23.5);  // Axial tilt
+  earthGroup.add(earthMesh);
+  scene.add(earthGroup);
+
+  // GUI for tweaking parameters
+  const gui = new dat.GUI();
+  gui.add(params, 'sunIntensity', 0.0, 5.0, 0.1).onChange(val => dirLight.intensity = val).name('Sun Intensity');
+  gui.add(params, 'speedFactor', 0.1, 20.0, 0.1).name('Rotation Speed');
+
+  // Stats for monitoring performance
+  const stats = new Stats();
+  document.body.appendChild(stats.dom);
+
+  // Animation loop
+  function animate() {
+    requestAnimationFrame(animate);
+    earthMesh.rotateY(0.005 * params.speedFactor);  // Rotate the Earth
+    controls.update();
+    stats.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+});
+
+// Handle window resize
+window.addEventListener('resize', () => {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+});
+
 
 
