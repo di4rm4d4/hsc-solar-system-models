@@ -50,7 +50,7 @@ celestialTextureLoader.load('eso0932a.jpg', (texture) => {
     
     // Animate 
     const animateCelestialSphere = () => {
-        celestialSphere.rotation.y += 0.005; // This has to match eudoxus omg noooo physics
+        celestialSphere.rotation.y += 0.10; // This has to match eudoxus omg noooo physics
     };
     
     
@@ -60,7 +60,7 @@ celestialTextureLoader.load('eso0932a.jpg', (texture) => {
         // Call the function to animate the celestial sphere
         animateCelestialSphere();
         
-        earthMesh.rotateY(0.005 * params.speedFactor); // Rotate the Earth
+        earthMesh.rotateY(0.0 * params.speedFactor); // Rotate the Earth
         controls.update();
         stats.update();
         renderer.render(scene, camera);
@@ -80,7 +80,7 @@ celestialTextureLoader.load('eso0932a.jpg', (texture) => {
   // Animation loop (i wanna make this accurate)
   function animate() {
     requestAnimationFrame(animate);
-    earthMesh.rotateY(0.005 * params.speedFactor);  // Rotate the Earth
+    earthMesh.rotateY(0.00 * params.speedFactor);  // Rotate the Earth (she dont rotate)
     controls.update();
     stats.update();
     renderer.render(scene, camera);
