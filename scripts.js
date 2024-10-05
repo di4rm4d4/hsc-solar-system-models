@@ -1,91 +1,109 @@
-
 const params = {
-  sunIntensity: 1.8, // brightness of the sun
-  speedFactor: 2.0   // rotation speed of the earth
+  sunIntensity: 1.8,     // Brightness of the sun
+  speedFactor: 0.005     // Overall speed multiplier for celestial bodies
 };
 
-// scene & render
+// Scene & Renderer Setup
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-camera.position.set(0, 0, 30);
+camera.position.set(0, 0, 50);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.outputColorSpace = THREE.SRGBColorSpace;  // Ensure correct color space
 document.getElementById('earth-container').appendChild(renderer.domElement);
 
 // OrbitControls for camera movement
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 
-// sunlight
+// Sunlight
 const dirLight = new THREE.DirectionalLight(0xffffff, params.sunIntensity);
 dirLight.position.set(-50, 0, 30);
 scene.add(dirLight);
 
-// Earth's texture and create the mesh
+// Earth's Static Mesh
 const textureLoader = new THREE.TextureLoader();
 textureLoader.load('land_ocean_ice_8192.png', (texture) => {
   const earthGeometry = new THREE.SphereGeometry(10, 64, 64);
   const earthMaterial = new THREE.MeshStandardMaterial({ map: texture });
   const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
-
-  // magical thingys to handle tilt
+  
+  // Earth's Axial Tilt Group
   const earthGroup = new THREE.Group();
-  earthGroup.rotation.z = THREE.MathUtils.degToRad(23.5);  // Axial tilt
+  earthGroup.rotation.z = THREE.MathUtils.degToRad(23.5);  // Axial tilt of the Earth
   earthGroup.add(earthMesh);
   scene.add(earthGroup);
 
-  // texture for the celestial sphere
-const celestialTextureLoader = new THREE.TextureLoader();
-celestialTextureLoader.load('eso0932a.jpg', (texture) => {
-    const celestialSphereGeometry = new THREE.SphereGeometry(25, 64, 64); // Larger than Earth
+  // Create a rotating Celestial Sphere
+  const celestialTextureLoader = new THREE.TextureLoader();
+  celestialTextureLoader.load('eso0932a.jpg', (texture) => {
+    const celestialSphereGeometry = new THREE.SphereGeometry(40, 64, 64);  // Larger than Earth
     const celestialSphereMaterial = new THREE.MeshBasicMaterial({
-        map: texture,
-        side: THREE.BackSide // Make sure we see the inside of the sphere
+      map: texture,
+      side: THREE.BackSide  // See the inside of the sphere
     });
     const celestialSphere = new THREE.Mesh(celestialSphereGeometry, celestialSphereMaterial);
-    
-    scene.add(celestialSphere); // Add the celestial sphere to the scene
-    
-    // Animate 
-    const animateCelestialSphere = () => {
-        celestialSphere.rotation.y += 2; // This has to match eudoxus omg noooo physics
-    };
-    
-    
+    scene.add(celestialSphere);
+
+    // Orbit Group for Celestial Layers
+    const celestialLayers = new THREE.Group();
+
+    // Add Spheres for Mercury, Venus, Mars, Jupiter, Saturn, and the Sun
+    const layers = [
+      { name: 'Mercury', radius: 15, color: 0xaaaaaa, speed: 0.47 },
+      { name: 'Venus', radius: 18, color: 0xffcc33, speed: 0.35 },
+      { name: 'Mars', radius: 21, color: 0xff3300, speed: 0.25 },
+      { name: 'Jupiter', radius: 25, color: 0xff6600, speed: 0.15 },
+      { name: 'Saturn', radius: 28, color: 0xffcc00, speed: 0.10 },
+      { name: 'Sun', radius: 12, color: 0xffff33, speed: 0.30 },
+      { name: 'Moon', radius: 13, color: 0xffffff, speed: 0.55 }
+    ];
+
+    layers.forEach((layer) => {
+      const layerGeometry = new THREE.SphereGeometry(layer.radius, 64, 64);
+      const layerMaterial = new THREE.MeshBasicMaterial({
+        color: layer.color,
+        transparent: true,
+        opacity: 0.2,
+        wireframe: true
+      });
+      const layerMesh = new THREE.Mesh(layerGeometry, layerMaterial);
+      layerMesh.rotation.x = THREE.MathUtils.degToRad(23.5);  // Align with Earth's tilt
+      celestialLayers.add(layerMesh);
+
+      // Attach a small "planet" to each layer to visualize motion
+      const planetGeometry = new THREE.SphereGeometry(0.3, 32, 32);
+      const planetMaterial = new THREE.MeshBasicMaterial({ color: layer.color });
+      const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
+
+      // Position it at the radius of the sphere
+      planetMesh.position.set(layer.radius, 0, 0);
+      layerMesh.add(planetMesh);
+      
+      // Animate layer rotation to simulate motion
+      layerMesh.userData.speed = layer.speed;
+    });
+
+    scene.add(celestialLayers);
+
+    // Animate Function
     function animate() {
-        requestAnimationFrame(animate);
-        
-        // Call the function to animate the celestial sphere
-        animateCelestialSphere();
-        
-        earthMesh.rotateY(0.0 * params.speedFactor); // Rotate the Earth
-        controls.update();
-        stats.update();
-        renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+
+      // Celestial Sphere Rotation
+      celestialSphere.rotation.y += params.speedFactor * 0.01;
+
+      // Rotate the inner celestial spheres to simulate planetary motion
+      celestialLayers.children.forEach((layer) => {
+        layer.rotation.y += params.speedFactor * layer.userData.speed;
+      });
+
+      controls.update();
+      renderer.render(scene, camera);
     }
-});
 
-
-  // GUI (i dont want u anymore sis)
-  //const gui = new dat.GUI();
-  //gui.add(params, 'sunIntensity', 0.0, 5.0, 0.1).onChange(val => dirLight.intensity = val).name('Sun Intensity');
-  //gui.add(params, 'speedFactor', 0.1, 20.0, 0.1).name('Rotation Speed');
-
-  // Stats
-  const stats = new Stats();
-  document.body.appendChild(stats.dom);
-
-  // Animation loop (i wanna make this accurate)
-  function animate() {
-    requestAnimationFrame(animate);
-    earthMesh.rotateY(0.00 * params.speedFactor);  // Rotate the Earth (she dont rotate)
-    controls.update();
-    stats.update();
-    renderer.render(scene, camera);
-  }
-  animate();
+    animate();
+  });
 });
 
 // Handle window resize
