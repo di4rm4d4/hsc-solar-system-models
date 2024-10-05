@@ -42,8 +42,8 @@ textureLoader.load('land_ocean_ice_8192.png', (texture) => {
   //gui.add(params, 'speedFactor', 0.1, 20.0, 0.1).name('Rotation Speed');
 
   // Stats
-  //const stats = new Stats();
-  //document.body.appendChild(stats.dom);
+  const stats = new Stats();
+  document.body.appendChild(stats.dom);
 
   // Animation loop (i wanna make this accurate)
   function animate() {
