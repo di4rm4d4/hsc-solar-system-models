@@ -36,6 +36,38 @@ textureLoader.load('land_ocean_ice_8192.png', (texture) => {
   earthGroup.add(earthMesh);
   scene.add(earthGroup);
 
+  // Load texture for the celestial sphere
+const celestialTextureLoader = new THREE.TextureLoader();
+celestialTextureLoader.load('path_to_your_stars_texture.jpg', (texture) => {
+    const celestialSphereGeometry = new THREE.SphereGeometry(15, 64, 64); // Larger than Earth
+    const celestialSphereMaterial = new THREE.MeshBasicMaterial({
+        map: texture,
+        side: THREE.BackSide // Make sure we see the inside of the sphere
+    });
+    const celestialSphere = new THREE.Mesh(celestialSphereGeometry, celestialSphereMaterial);
+    
+    scene.add(celestialSphere); // Add the celestial sphere to the scene
+    
+    // Animate the celestial sphere
+    const animateCelestialSphere = () => {
+        celestialSphere.rotation.y += 0.001; // Adjust the speed here
+    };
+    
+    // Include the animation in your animate function
+    function animate() {
+        requestAnimationFrame(animate);
+        
+        // Call the function to animate the celestial sphere
+        animateCelestialSphere();
+        
+        earthMesh.rotateY(0.005 * params.speedFactor); // Rotate the Earth
+        controls.update();
+        stats.update();
+        renderer.render(scene, camera);
+    }
+});
+
+
   // GUI (i dont want u anymore sis)
   //const gui = new dat.GUI();
   //gui.add(params, 'sunIntensity', 0.0, 5.0, 0.1).onChange(val => dirLight.intensity = val).name('Sun Intensity');
