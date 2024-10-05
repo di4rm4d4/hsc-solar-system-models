@@ -19,9 +19,9 @@ const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 
 // sunlight
-//const dirLight = new THREE.DirectionalLight(0xffffff, params.sunIntensity);
-//dirLight.position.set(-50, 0, 30);
-//scene.add(dirLight);
+const dirLight = new THREE.DirectionalLight(0xffffff, params.sunIntensity);
+dirLight.position.set(-50, 0, 30);
+scene.add(dirLight);
 
 // Earth's texture and create the mesh
 const textureLoader = new THREE.TextureLoader();
