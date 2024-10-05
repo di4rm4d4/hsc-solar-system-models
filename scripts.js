@@ -36,9 +36,9 @@ textureLoader.load('land_ocean_ice_8192.png', (texture) => {
   earthGroup.add(earthMesh);
   scene.add(earthGroup);
 
-  // Load texture for the celestial sphere
+  // texture for the celestial sphere
 const celestialTextureLoader = new THREE.TextureLoader();
-celestialTextureLoader.load('photo-1691989949393-7cc2a4a1c518.jpeg', (texture) => {
+celestialTextureLoader.load('eso0932a.jpg', (texture) => {
     const celestialSphereGeometry = new THREE.SphereGeometry(25, 64, 64); // Larger than Earth
     const celestialSphereMaterial = new THREE.MeshBasicMaterial({
         map: texture,
@@ -48,12 +48,12 @@ celestialTextureLoader.load('photo-1691989949393-7cc2a4a1c518.jpeg', (texture) =
     
     scene.add(celestialSphere); // Add the celestial sphere to the scene
     
-    // Animate the celestial sphere
+    // Animate 
     const animateCelestialSphere = () => {
-        celestialSphere.rotation.y += 0.001; // Adjust the speed here
+        celestialSphere.rotation.y += 0.005; // This has to match eudoxus omg noooo physics
     };
     
-    // Include the animation in your animate function
+    
     function animate() {
         requestAnimationFrame(animate);
         
