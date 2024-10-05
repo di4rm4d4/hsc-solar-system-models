@@ -39,7 +39,7 @@ textureLoader.load('land_ocean_ice_8192.png', (texture) => {
   // Load texture for the celestial sphere
 const celestialTextureLoader = new THREE.TextureLoader();
 celestialTextureLoader.load('photo-1691989949393-7cc2a4a1c518.jpeg', (texture) => {
-    const celestialSphereGeometry = new THREE.SphereGeometry(15, 64, 64); // Larger than Earth
+    const celestialSphereGeometry = new THREE.SphereGeometry(25, 64, 64); // Larger than Earth
     const celestialSphereMaterial = new THREE.MeshBasicMaterial({
         map: texture,
         side: THREE.BackSide // Make sure we see the inside of the sphere
