@@ -26,7 +26,7 @@ scene.add(dirLight);
 
 // Load Earth's texture and create the mesh
 const textureLoader = new THREE.TextureLoader();
-textureLoader.load('https://threejsfundamentals.org/threejs/resources/images/earth.jpg', (texture) => {
+textureLoader.load('land_ocean_ice_8192.png', (texture) => {
   const earthGeometry = new THREE.SphereGeometry(10, 64, 64);
   const earthMaterial = new THREE.MeshStandardMaterial({ map: texture });
   const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
