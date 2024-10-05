@@ -50,7 +50,7 @@ celestialTextureLoader.load('eso0932a.jpg', (texture) => {
     
     // Animate 
     const animateCelestialSphere = () => {
-        celestialSphere.rotation.y += 0.10; // This has to match eudoxus omg noooo physics
+        celestialSphere.rotation.y += 2; // This has to match eudoxus omg noooo physics
     };
     
     
