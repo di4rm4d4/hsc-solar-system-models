@@ -21,18 +21,4 @@ body, html {
     position: relative;
 }
 
-/* Optional: Style the GUI controls */
-.dat.gui {
-    top: 10px;
-    right: 10px;
-    position: absolute;
-    z-index: 10; /* Ensure it stays above the Three.js canvas */
-}
 
-/* Optional: Style the Stats.js panel */
-.stats {
-    top: 10px;
-    left: 10px;
-    position: absolute;
-    z-index: 10;
-}
