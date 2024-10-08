@@ -9,10 +9,11 @@ const params = {
 // Scene & Renderer Setup
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-camera.position.set(0, 50, 70); // Adjusted position to better view the geocentric model
+camera.position.set(0, 50, 100); // Adjusted position to better view the geocentric model
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x000000); // Set clear color for renderer
 document.body.appendChild(renderer.domElement);
 
 // OrbitControls for camera movement
@@ -22,6 +23,11 @@ controls.enableDamping = true;
 // Ambient Light to illuminate the scene uniformly
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
+
+// Add a directional light
+const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+dirLight.position.set(10, 20, 10).normalize();
+scene.add(dirLight);
 
 // Earth's Static Mesh at the Center
 const earthGeometry = new THREE.SphereGeometry(params.earthRadius, 64, 64);
