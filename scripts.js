@@ -33,11 +33,16 @@ scene.add(earthMesh);
 const celestialGroups = new THREE.Group();
 scene.add(celestialGroups);
 
-// Define celestial bodies based on Eudoxus's system
+// Define celestial bodies with spheres based on Eudoxus's system
 const celestialBodies = [
-  { name: 'Sun', primaryRadius: 20, secondaryRadius: 15, tertiaryRadius: 5, fourthRadius: 0, primarySpeed: 0.02, secondarySpeed: -0.015, tertiarySpeed: 0.05, fourthSpeed: 0 },
-  { name: 'Mars', primaryRadius: 25, secondaryRadius: 18, tertiaryRadius: 5, fourthRadius: 3, primarySpeed: 0.01, secondarySpeed: 0.008, tertiarySpeed: -0.015, fourthSpeed: 0.02 },
-  // Add similar entries for other planets as needed
+  { name: 'Sun', spheres: 3, primaryRadius: 20, primarySpeed: 0.02, inclination: 0 },
+  { name: 'Mercury', spheres: 3, primaryRadius: 22, primarySpeed: 0.047, inclination: 0.046 }, // Inclination ~ 2°
+  { name: 'Venus', spheres: 3, primaryRadius: 24, primarySpeed: 0.036, inclination: 0.044 }, // Inclination ~ 3°
+  { name: 'Earth', spheres: 1, primaryRadius: 5, primarySpeed: 0 }, // Earth is stationary
+  { name: 'Moon', spheres: 3, primaryRadius: 6, primarySpeed: 0.055, inclination: 0.05 }, // Approximate
+  { name: 'Mars', spheres: 4, primaryRadius: 26, primarySpeed: 0.017, inclination: 0.34 }, // Inclination ~ 5°
+  { name: 'Jupiter', spheres: 4, primaryRadius: 30, primarySpeed: 0.0083, inclination: 0.215 }, // Approximate
+  { name: 'Saturn', spheres: 4, primaryRadius: 34, primarySpeed: 0.0061, inclination: 0.06 } // Approximate
 ];
 
 celestialBodies.forEach(body => {
@@ -45,49 +50,22 @@ celestialBodies.forEach(body => {
   const bodyGroup = new THREE.Group();
   celestialGroups.add(bodyGroup);
 
-  // Create concentric spheres for each layer based on Eudoxus's model
-  const layers = [
-    { radius: body.primaryRadius, speed: body.primarySpeed, color: 0xff0000 },
-    { radius: body.secondaryRadius, speed: body.secondarySpeed, color: 0x00ff00 },
-    { radius: body.tertiaryRadius, speed: body.tertiarySpeed, color: 0x0000ff },
-    { radius: body.fourthRadius, speed: body.fourthSpeed, color: 0xffff00 }
-  ];
+  // Create concentric spheres based on Eudoxus's model
+  for (let i = 0; i < body.spheres; i++) {
+    const layerRadius = body.primaryRadius + (i * 2); // Increase radius for each layer
+    const layerMaterial = new THREE.MeshBasicMaterial({
+      color: i % 2 === 0 ? 0xffcc00 : 0x00ccff,
+      transparent: true,
+      opacity: params.sphereOpacity,
+      wireframe: true
+    });
+    const layerGeometry = new THREE.SphereGeometry(layerRadius, 64, 64);
+    const layerMesh = new THREE.Mesh(layerGeometry, layerMaterial);
+    bodyGroup.add(layerMesh);
 
-  let previousSphere = null;
-
-  layers.forEach((layer, index) => {
-    if (layer.radius > 0) {
-      const layerGeometry = new THREE.SphereGeometry(layer.radius, 64, 64);
-      const layerMaterial = new THREE.MeshBasicMaterial({
-        color: layer.color,
-        transparent: true,
-        opacity: params.sphereOpacity,
-        wireframe: true
-      });
-      const layerMesh = new THREE.Mesh(layerGeometry, layerMaterial);
-
-      // Attach the sphere to the previous sphere if it exists, or to the body group
-      if (previousSphere) {
-        previousSphere.add(layerMesh);
-      } else {
-        bodyGroup.add(layerMesh);
-      }
-
-      previousSphere = layerMesh;
-
-      // Attach a small "planet" or "Sun" to the innermost sphere to visualize its position
-      if (index === layers.length - 1) {
-        const planetGeometry = new THREE.SphereGeometry(0.5, 32, 32);
-        const planetMaterial = new THREE.MeshBasicMaterial({ color: layer.color });
-        const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
-        planetMesh.position.set(layer.radius, 0, 0);
-        layerMesh.add(planetMesh);
-      }
-
-      // Store rotation speed in userData
-      layerMesh.userData = { speed: layer.speed };
-    }
-  });
+    // Store rotation speed in userData
+    layerMesh.userData = { speed: body.primarySpeed / (i + 1) }; // Different speed for each layer
+  }
 
   // Create a label for each celestial body
   const canvas = document.createElement('canvas');
@@ -101,15 +79,40 @@ celestialBodies.forEach(body => {
   const labelMaterial = new THREE.SpriteMaterial({ map: texture });
   const labelSprite = new THREE.Sprite(labelMaterial);
   labelSprite.scale.set(params.labelSize, params.labelSize / 2, 1);
-  labelSprite.position.set(body.primaryRadius + 2, 0, 0);
+  labelSprite.position.set(body.primaryRadius + 3, 0, 0);
   bodyGroup.add(labelSprite);
+
+  // Create hippopede motion if applicable (for Mars and outer planets)
+  if (body.name === 'Mars') {
+    createHippopede(bodyGroup, body.primaryRadius, 34); // Inclination ~ 34° for Mars
+  }
 });
+
+// Function to create the hippopede motion
+function createHippopede(group, radius, inclination) {
+  const hippopedeGeometry = new THREE.BufferGeometry();
+  const points = [];
+  const angleStep = Math.PI / 180; // Step size in radians
+
+  // Define the hippopede curve based on the inclination
+  for (let theta = 0; theta < Math.PI * 2; theta += angleStep) {
+    const x = radius * Math.cos(theta);
+    const y = radius * Math.sin(theta) * Math.sin(inclination); // Adjust for inclination
+    const z = radius * Math.sin(theta) * Math.cos(inclination); // Adjust for inclination
+    points.push(x, y, z);
+  }
+
+  hippopedeGeometry.setAttribute('position', new THREE.Float32BufferAttribute(points, 3));
+  const hippopedeMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+  const hippopedeLine = new THREE.Line(hippopedeGeometry, hippopedeMaterial);
+  group.add(hippopedeLine);
+}
 
 // Animate Function
 function animate() {
   requestAnimationFrame(animate);
 
-  // Rotate each celestial group's primary, secondary, tertiary, and fourth spheres
+  // Rotate each celestial group's spheres
   celestialGroups.children.forEach(group => {
     group.children.forEach(layer => {
       layer.rotation.y += params.speedFactor * layer.userData.speed;
@@ -128,4 +131,3 @@ window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 });
-
