@@ -35,7 +35,7 @@ textureLoader.load('land_ocean_ice_8192.png', (texture) => {
 
   // Define celestial bodies with their respective parameters
   const celestialBodies = [
-    { name: 'Sun', color: 0xffff33, primaryRadius: 10, epicycleRadius: 2, primarySpeed: 0.02, epicycleSpeed: 0.05 },
+    { name: 'Sun', color: 0xffff33, primaryRadius: 12, epicycleRadius: 2, primarySpeed: 0.02, epicycleSpeed: 0.05 }, // Increased Sun size
     { name: 'Mercury', color: 0xaaaaaa, primaryRadius: 12, epicycleRadius: 1.5, primarySpeed: 0.04, epicycleSpeed: 0.06 },
     { name: 'Venus', color: 0xffcc33, primaryRadius: 14, epicycleRadius: 1.8, primarySpeed: 0.03, epicycleSpeed: 0.05 },
     { name: 'Mars', color: 0xff3300, primaryRadius: 16, epicycleRadius: 1.6, primarySpeed: 0.025, epicycleSpeed: 0.045 },
@@ -49,18 +49,18 @@ textureLoader.load('land_ocean_ice_8192.png', (texture) => {
     const bodyGroup = new THREE.Group();
     celestialGroups.add(bodyGroup);
 
-    // Primary Sphere
+    // Primary Sphere: Transparent and wireframe
     const primaryGeometry = new THREE.SphereGeometry(body.primaryRadius, 32, 32);
     const primaryMaterial = new THREE.MeshBasicMaterial({
       color: body.color,
       transparent: true,
-      opacity: 0.5,
-      wireframe: false
+      opacity: 0.2,          // Make it see-through
+      wireframe: true        // Enable wireframe for visual clarity
     });
     const primaryMesh = new THREE.Mesh(primaryGeometry, primaryMaterial);
     bodyGroup.add(primaryMesh);
 
-    // Epicycle Sphere
+    // Epicycle Sphere: Retain previous settings
     const epicycleGeometry = new THREE.SphereGeometry(body.epicycleRadius, 16, 16);
     const epicycleMaterial = new THREE.MeshBasicMaterial({
       color: body.color,
@@ -78,6 +78,22 @@ textureLoader.load('land_ocean_ice_8192.png', (texture) => {
     const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
     planetMesh.position.set(body.epicycleRadius, 0, 0); // Position on the epicycle
     epicycleMesh.add(planetMesh);
+
+    // Create a label for each celestial body
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    context.font = '24px Arial';
+    context.fillStyle = 'white';
+    context.fillText(body.name, 0, 20);
+    
+    // Use canvas as texture for the label sprite
+    const texture = new THREE.CanvasTexture(canvas);
+    const labelMaterial = new THREE.SpriteMaterial({ map: texture });
+    const labelSprite = new THREE.Sprite(labelMaterial);
+
+    labelSprite.scale.set(5, 2.5, 1); // Adjust label size
+    labelSprite.position.set(body.primaryRadius + 1, 0, 0); // Position label near the primary sphere
+    primaryMesh.add(labelSprite);
 
     // Store rotation speeds in userData
     bodyGroup.userData = {
