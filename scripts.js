@@ -49,4 +49,83 @@ celestialBodies.forEach(body => {
   const layers = [
     { radius: body.primaryRadius, speed: body.primarySpeed, color: 0xff0000 },
     { radius: body.secondaryRadius, speed: body.secondarySpeed, color: 0x00ff00 },
-    { radius: body.tertiaryRadius, speed: body.tertiarySpeed, color: 0x0000ff
+    { radius: body.tertiaryRadius, speed: body.tertiarySpeed, color: 0x0000ff },
+    { radius: body.fourthRadius, speed: body.fourthSpeed, color: 0xffff00 }
+  ];
+
+  let previousSphere = null;
+
+  layers.forEach((layer, index) => {
+    if (layer.radius > 0) {
+      const layerGeometry = new THREE.SphereGeometry(layer.radius, 64, 64);
+      const layerMaterial = new THREE.MeshBasicMaterial({
+        color: layer.color,
+        transparent: true,
+        opacity: params.sphereOpacity,
+        wireframe: true
+      });
+      const layerMesh = new THREE.Mesh(layerGeometry, layerMaterial);
+
+      // Attach the sphere to the previous sphere if it exists, or to the body group
+      if (previousSphere) {
+        previousSphere.add(layerMesh);
+      } else {
+        bodyGroup.add(layerMesh);
+      }
+
+      previousSphere = layerMesh;
+
+      // Attach a small "planet" or "Sun" to the innermost sphere to visualize its position
+      if (index === layers.length - 1) {
+        const planetGeometry = new THREE.SphereGeometry(0.5, 32, 32);
+        const planetMaterial = new THREE.MeshBasicMaterial({ color: layer.color });
+        const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
+        planetMesh.position.set(layer.radius, 0, 0);
+        layerMesh.add(planetMesh);
+      }
+
+      // Store rotation speed in userData
+      layerMesh.userData = { speed: layer.speed };
+    }
+  });
+
+  // Create a label for each celestial body
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  context.font = '24px Arial';
+  context.fillStyle = 'white';
+  context.fillText(body.name, 0, 20);
+
+  // Use canvas as texture for the label sprite
+  const texture = new THREE.CanvasTexture(canvas);
+  const labelMaterial = new THREE.SpriteMaterial({ map: texture });
+  const labelSprite = new THREE.Sprite(labelMaterial);
+  labelSprite.scale.set(params.labelSize, params.labelSize / 2, 1);
+  labelSprite.position.set(body.primaryRadius + 2, 0, 0);
+  bodyGroup.add(labelSprite);
+});
+
+// Animate Function
+function animate() {
+  requestAnimationFrame(animate);
+
+  // Rotate each celestial group's primary, secondary, tertiary, and fourth spheres
+  celestialGroups.children.forEach(group => {
+    group.children.forEach(layer => {
+      layer.rotation.y += params.speedFactor * layer.userData.speed;
+    });
+  });
+
+  controls.update();
+  renderer.render(scene, camera);
+}
+
+animate();
+
+// Handle window resize
+window.addEventListener('resize', () => {
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+});
+
