@@ -23,26 +23,28 @@ controls.enableDamping = true;
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
-// Earth's Static Mesh at the Center
+// Earth's Static Mesh with Texture
+const textureLoader = new THREE.TextureLoader();
 const earthGeometry = new THREE.SphereGeometry(params.earthRadius, 64, 64);
-const earthMaterial = new THREE.MeshStandardMaterial({ color: 0x3399ff });
-const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
-scene.add(earthMesh);
+textureLoader.load('path_to_earth_texture.jpg', (texture) => {
+  const earthMaterial = new THREE.MeshStandardMaterial({ map: texture });
+  const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
+  scene.add(earthMesh);
+});
 
 // Group to hold all celestial spheres and motions
 const celestialGroups = new THREE.Group();
 scene.add(celestialGroups);
 
-// Define celestial bodies with spheres based on Eudoxus's system
+// Define celestial bodies based on Eudoxus's system (one sphere per planet)
 const celestialBodies = [
-  { name: 'Sun', spheres: 3, primaryRadius: 20, primarySpeed: 0.02, inclination: 0 },
-  { name: 'Mercury', spheres: 3, primaryRadius: 22, primarySpeed: 0.047, inclination: 0.046 }, // Inclination ~ 2°
-  { name: 'Venus', spheres: 3, primaryRadius: 24, primarySpeed: 0.036, inclination: 0.044 }, // Inclination ~ 3°
-  { name: 'Earth', spheres: 1, primaryRadius: 5, primarySpeed: 0 }, // Earth is stationary
-  { name: 'Moon', spheres: 3, primaryRadius: 6, primarySpeed: 0.055, inclination: 0.05 }, // Approximate
-  { name: 'Mars', spheres: 4, primaryRadius: 26, primarySpeed: 0.017, inclination: 0.34 }, // Inclination ~ 5°
-  { name: 'Jupiter', spheres: 4, primaryRadius: 30, primarySpeed: 0.0083, inclination: 0.215 }, // Approximate
-  { name: 'Saturn', spheres: 4, primaryRadius: 34, primarySpeed: 0.0061, inclination: 0.06 } // Approximate
+  { name: 'Sun', primaryRadius: 20, primarySpeed: 0.02, inclination: 0 },
+  { name: 'Mercury', primaryRadius: 22, primarySpeed: 0.047, inclination: 0.046 }, 
+  { name: 'Venus', primaryRadius: 24, primarySpeed: 0.036, inclination: 0.044 }, 
+  { name: 'Earth', primaryRadius: 5, primarySpeed: 0 }, // Earth is stationary
+  { name: 'Mars', primaryRadius: 26, primarySpeed: 0.017, inclination: 0.34 }, 
+  { name: 'Jupiter', primaryRadius: 30, primarySpeed: 0.0083, inclination: 0.215 }, 
+  { name: 'Saturn', primaryRadius: 34, primarySpeed: 0.0061, inclination: 0.06 } 
 ];
 
 celestialBodies.forEach(body => {
@@ -50,22 +52,19 @@ celestialBodies.forEach(body => {
   const bodyGroup = new THREE.Group();
   celestialGroups.add(bodyGroup);
 
-  // Create concentric spheres based on Eudoxus's model
-  for (let i = 0; i < body.spheres; i++) {
-    const layerRadius = body.primaryRadius + (i * 2); // Increase radius for each layer
-    const layerMaterial = new THREE.MeshBasicMaterial({
-      color: i % 2 === 0 ? 0xffcc00 : 0x00ccff,
-      transparent: true,
-      opacity: params.sphereOpacity,
-      wireframe: true
-    });
-    const layerGeometry = new THREE.SphereGeometry(layerRadius, 64, 64);
-    const layerMesh = new THREE.Mesh(layerGeometry, layerMaterial);
-    bodyGroup.add(layerMesh);
+  // Create a single sphere for each celestial body
+  const layerGeometry = new THREE.SphereGeometry(body.primaryRadius, 64, 64);
+  const layerMaterial = new THREE.MeshBasicMaterial({
+    color: 0xffff00,
+    transparent: true,
+    opacity: params.sphereOpacity,
+    wireframe: true
+  });
+  const layerMesh = new THREE.Mesh(layerGeometry, layerMaterial);
+  bodyGroup.add(layerMesh);
 
-    // Store rotation speed in userData
-    layerMesh.userData = { speed: body.primarySpeed / (i + 1) }; // Different speed for each layer
-  }
+  // Add rotation speed
+  layerMesh.userData = { speed: body.primarySpeed };
 
   // Create a label for each celestial body
   const canvas = document.createElement('canvas');
@@ -74,7 +73,6 @@ celestialBodies.forEach(body => {
   context.fillStyle = 'white';
   context.fillText(body.name, 0, 20);
 
-  // Use canvas as texture for the label sprite
   const texture = new THREE.CanvasTexture(canvas);
   const labelMaterial = new THREE.SpriteMaterial({ map: texture });
   const labelSprite = new THREE.Sprite(labelMaterial);
@@ -82,23 +80,23 @@ celestialBodies.forEach(body => {
   labelSprite.position.set(body.primaryRadius + 3, 0, 0);
   bodyGroup.add(labelSprite);
 
-  // Create hippopede motion if applicable (for Mars and outer planets)
-  if (body.name === 'Mars') {
-    createHippopede(bodyGroup, body.primaryRadius, 34); // Inclination ~ 34° for Mars
+  // Visualize the hippopede motion for the planet
+  if (body.name !== 'Sun' && body.name !== 'Earth') {
+    createHippopede(bodyGroup, body.primaryRadius, body.inclination);
   }
 });
 
-// Function to create the hippopede motion
+// Function to create the hippopede motion for each planet
 function createHippopede(group, radius, inclination) {
   const hippopedeGeometry = new THREE.BufferGeometry();
   const points = [];
   const angleStep = Math.PI / 180; // Step size in radians
 
-  // Define the hippopede curve based on the inclination
+  // Generate points for the hippopede (figure-eight curve)
   for (let theta = 0; theta < Math.PI * 2; theta += angleStep) {
     const x = radius * Math.cos(theta);
-    const y = radius * Math.sin(theta) * Math.sin(inclination); // Adjust for inclination
-    const z = radius * Math.sin(theta) * Math.cos(inclination); // Adjust for inclination
+    const y = radius * Math.sin(theta) * Math.sin(inclination);
+    const z = radius * Math.sin(2 * theta) * Math.cos(inclination); // Adjust for inclination
     points.push(x, y, z);
   }
 
@@ -112,10 +110,12 @@ function createHippopede(group, radius, inclination) {
 function animate() {
   requestAnimationFrame(animate);
 
-  // Rotate each celestial group's spheres
+  // Rotate each celestial group's sphere
   celestialGroups.children.forEach(group => {
     group.children.forEach(layer => {
-      layer.rotation.y += params.speedFactor * layer.userData.speed;
+      if (layer.userData.speed) {
+        layer.rotation.y += params.speedFactor * layer.userData.speed;
+      }
     });
   });
 
@@ -131,4 +131,3 @@ window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 });
-
