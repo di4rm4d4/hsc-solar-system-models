@@ -17,6 +17,7 @@
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
             font-family: Arial, sans-serif;
             overflow-y: auto;
+            z-index: 10; /* Ensure it stays on top */
         }
         #render-area {
             flex-grow: 1;
@@ -24,6 +25,7 @@
             align-items: center;
             justify-content: center;
             background-color: #000;
+            position: relative;
         }
         canvas {
             display: block;
@@ -31,7 +33,7 @@
     </style>
 </head>
 <body>
-   
+    <!-- Sidebar for information -->
     <div id="info-sidebar">
         <h2>Eudoxus' Planetary System</h2>
         <p>Eudoxus of Cnidus (circa 400 BCE) proposed a model of the cosmos using homocentric spheres...</p>
@@ -45,12 +47,16 @@
         <p>Mercury's motion is represented by a figure-eight hippopede pattern...</p>
     </div>
 
+    <!-- 3D render area -->
     <div id="render-area"></div>
 
+    <!-- Load Three.js from CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Load OrbitControls from CDN -->
     <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/OrbitControls.js"></script>
     
     <!-- Link to the external JavaScript file -->
     <script src="scripts.js"></script>
 </body>
 </html>
+
