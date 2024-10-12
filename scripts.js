@@ -12,8 +12,8 @@ const camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 300) / windo
 camera.position.set(0, 50, 70); // Adjusted position to better view the geocentric model
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth - 300, window.innerHeight); // Adjust for sidebar
 document.getElementById('render-area').appendChild(renderer.domElement);
+resizeRenderer();  // Set initial canvas size
 
 // OrbitControls for camera movement
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -120,5 +120,8 @@ let time = 0;
 function updatePlanetPositions() {
     time += params.speedFactor; // Ensure time progresses with each frame
 
-    Object.keys(planetObjects
+    Object.keys(planetObjects).forEach(name => {
+        const planet = planetObjects[name];
+        const t = time * planet.speed; // Calculate time-dependent position
 
+        // Use the same
