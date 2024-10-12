@@ -12,7 +12,7 @@ const camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 300) / windo
 camera.position.set(0, 50, 70); // Adjusted position to better view the geocentric model
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth - 300, window.innerHeight); // Adjusted for the sidebar
+renderer.setSize(window.innerWidth - 300, window.innerHeight); // Adjust for sidebar
 document.getElementById('render-area').appendChild(renderer.domElement);
 
 // OrbitControls for camera movement
@@ -26,7 +26,7 @@ scene.add(ambientLight);
 // Earth's Static Mesh with Texture
 const textureLoader = new THREE.TextureLoader();
 const earthGeometry = new THREE.SphereGeometry(params.earthRadius, 64, 64);
-textureLoader.load('land_ocean_ice_8192.png', (texture) => {
+textureLoader.load('path_to_earth_texture.jpg', (texture) => {
     const earthMaterial = new THREE.MeshStandardMaterial({ map: texture });
     const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
     scene.add(earthMesh);
@@ -120,9 +120,5 @@ let time = 0;
 function updatePlanetPositions() {
     time += params.speedFactor; // Ensure time progresses with each frame
 
-    Object.keys(planetObjects).forEach(name => {
-        const planet = planetObjects[name];
-        const t = time * planet.speed; // Calculate time-dependent position
+    Object.keys(planetObjects
 
-        // Use the same equations from the hippopede generation for movement
-        const x = planet.radius * Math.cos(t) + 0.5 * Math.sin
