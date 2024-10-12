@@ -124,4 +124,40 @@ function updatePlanetPositions() {
         const planet = planetObjects[name];
         const t = time * planet.speed; // Calculate time-dependent position
 
-        // Use the same
+        // Use the same equations from the hippopede generation for movement
+        const x = planet.radius * Math.cos(t) + 0.5 * Math.sin(2 * t);
+        const y = planet.radius * Math.sin(t) * Math.sin(planet.tilt);
+        const z = planet.radius * Math.sin(2 * t) * Math.cos(planet.tilt);
+
+        planet.mesh.position.set(x, y, z); // Update planet position
+        planet.label.position.set(x + 3, y, z); // Make the label follow the planet
+    });
+}
+
+// Animate Function
+function animate() {
+    requestAnimationFrame(animate);
+
+    // Update the position of the Sun, Moon, and Mercury along the hippopede paths
+    updatePlanetPositions();
+
+    // Render the scene
+    controls.update();
+    renderer.render(scene, camera);
+}
+
+animate();
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    resizeRenderer();
+});
+
+// Function to resize the canvas when window is resized
+function resizeRenderer() {
+    const width = window.innerWidth - 300; // Sidebar is 300px wide
+    const height = window.innerHeight;
+    renderer.setSize(width, height);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+}
