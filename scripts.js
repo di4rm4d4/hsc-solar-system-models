@@ -26,7 +26,7 @@ scene.add(ambientLight);
 // Earth's Static Mesh with Texture
 const textureLoader = new THREE.TextureLoader();
 const earthGeometry = new THREE.SphereGeometry(params.earthRadius, 64, 64);
-textureLoader.load('land_ocean_ice_8192.jpg', (texture) => {
+textureLoader.load('land_ocean_ice_8192.png', (texture) => {
   const earthMaterial = new THREE.MeshStandardMaterial({ map: texture });
   const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
   scene.add(earthMesh);
