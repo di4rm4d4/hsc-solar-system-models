@@ -5,14 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eudoxus Solar System</title>
     <style>
-        body { margin: 0; }
-        canvas { display: block; }
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
+        #info-sidebar {
+            width: 300px;
+            background-color: #f4f4f4;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+            overflow-y: auto;
+        }
+        #render-area {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000;
+        }
+        canvas {
+            display: block;
+        }
     </style>
 </head>
 <body>
+   
+    <div id="info-sidebar">
+        <h2>Eudoxus' Planetary System</h2>
+        <p>Eudoxus of Cnidus (circa 400 BCE) proposed a model of the cosmos using homocentric spheres...</p>
+        <h3>The Hippopede</h3>
+        <p>The hippopede, or "horse-fetter," is a figure-eight shape...</p>
+        <h4>The Sun</h4>
+        <p>The Sun follows a complex path due to the tilt of its spheres...</p>
+        <h4>The Moon</h4>
+        <p>The Moon exhibits a hippopede-like orbit due to its inclination and rotating spheres...</p>
+        <h4>Mercury</h4>
+        <p>Mercury's motion is represented by a figure-eight hippopede pattern...</p>
+    </div>
+
+    <div id="render-area"></div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Load OrbitControls separately from Three.js -->
     <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/OrbitControls.js"></script>
+    
+    <!-- Link to the external JavaScript file -->
     <script src="scripts.js"></script>
 </body>
 </html>
