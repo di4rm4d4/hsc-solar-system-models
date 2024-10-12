@@ -118,18 +118,18 @@ function createHippopede(group, radius, tilt, speed) {
 // Update planet positions along the hippopede paths over time
 let time = 0;
 function updatePlanetPositions() {
-  time += params.speedFactor * 0.01;
+  time += params.speedFactor; // Ensure time progresses with each frame
 
   Object.keys(planetObjects).forEach(name => {
     const planet = planetObjects[name];
-    const t = time * planet.speed;
+    const t = time * planet.speed; // Calculate time-dependent position
 
     // Use the same equations from the hippopede generation for movement
     const x = planet.radius * Math.cos(t) + 0.5 * Math.sin(2 * t);
     const y = planet.radius * Math.sin(t) * Math.sin(planet.tilt);
     const z = planet.radius * Math.sin(2 * t) * Math.cos(planet.tilt);
 
-    planet.mesh.position.set(x, y, z);
+    planet.mesh.position.set(x, y, z); // Update the planet's position
   });
 }
 
@@ -153,4 +153,3 @@ window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 });
-
