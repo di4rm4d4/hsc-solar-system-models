@@ -36,26 +36,23 @@ textureLoader.load('land_ocean_ice_8192.png', (texture) => {
 const celestialGroups = new THREE.Group();
 scene.add(celestialGroups);
 
-// Define celestial bodies based on Eudoxus's system (one sphere per planet)
+// Define celestial bodies: Sun, Moon, and Mercury
 const celestialBodies = [
-  { name: 'Sun', primaryRadius: 20, primarySpeed: 0.02, inclination: 0 },
-  { name: 'Mercury', primaryRadius: 22, primarySpeed: 0.047, inclination: 0.046 }, 
-  { name: 'Venus', primaryRadius: 24, primarySpeed: 0.036, inclination: 0.044 }, 
-  { name: 'Earth', primaryRadius: 5, primarySpeed: 0 }, // Earth is stationary
-  { name: 'Mars', primaryRadius: 26, primarySpeed: 0.017, inclination: 0.34 }, 
-  { name: 'Jupiter', primaryRadius: 30, primarySpeed: 0.0083, inclination: 0.215 }, 
-  { name: 'Saturn', primaryRadius: 34, primarySpeed: 0.0061, inclination: 0.06 } 
+  { name: 'Sun', radius: 20, speed: 0.02, color: 0xffff00, tilt: Math.PI / 180 * 7 }, // Tilt approx 7°
+  { name: 'Moon', radius: 6, speed: 0.055, color: 0xcccccc, tilt: Math.PI / 180 * 5 }, // Inclination ~ 5°
+  { name: 'Mercury', radius: 22, speed: 0.047, color: 0xaaaaaa, tilt: Math.PI / 180 * 7 } // Tilt approx 7°
 ];
 
+// Function to create planetary spheres and label them
 celestialBodies.forEach(body => {
   // Group for each celestial body
   const bodyGroup = new THREE.Group();
   celestialGroups.add(bodyGroup);
 
   // Create a single sphere for each celestial body
-  const layerGeometry = new THREE.SphereGeometry(body.primaryRadius, 64, 64);
+  const layerGeometry = new THREE.SphereGeometry(body.radius, 64, 64);
   const layerMaterial = new THREE.MeshBasicMaterial({
-    color: 0xffff00,
+    color: body.color,
     transparent: true,
     opacity: params.sphereOpacity,
     wireframe: true
@@ -64,7 +61,7 @@ celestialBodies.forEach(body => {
   bodyGroup.add(layerMesh);
 
   // Add rotation speed
-  layerMesh.userData = { speed: body.primarySpeed };
+  layerMesh.userData = { speed: body.speed };
 
   // Create a label for each celestial body
   const canvas = document.createElement('canvas');
@@ -77,26 +74,47 @@ celestialBodies.forEach(body => {
   const labelMaterial = new THREE.SpriteMaterial({ map: texture });
   const labelSprite = new THREE.Sprite(labelMaterial);
   labelSprite.scale.set(params.labelSize, params.labelSize / 2, 1);
-  labelSprite.position.set(body.primaryRadius + 3, 0, 0);
+  labelSprite.position.set(body.radius + 3, 0, 0);
   bodyGroup.add(labelSprite);
 
-  // Visualize the hippopede motion for the planet
-  if (body.name !== 'Sun' && body.name !== 'Earth') {
-    createHippopede(bodyGroup, body.primaryRadius, body.inclination);
+  // Create hippopede motion for the Sun
+  if (body.name === 'Sun') {
+    createHippopede(bodyGroup, body.radius, body.tilt, body.speed);
+  }
+
+  // Create hippopede motion for the Moon
+  if (body.name === 'Moon') {
+    createHippopede(bodyGroup, body.radius, body.tilt, body.speed, true);
+  }
+
+  // Create hippopede motion for Mercury
+  if (body.name === 'Mercury') {
+    createHippopede(bodyGroup, body.radius, body.tilt, body.speed);
   }
 });
 
-// Function to create the hippopede motion for each planet
-function createHippopede(group, radius, inclination) {
+// Function to create the hippopede motion
+function createHippopede(group, radius, tilt, speed, isMoon = false) {
   const hippopedeGeometry = new THREE.BufferGeometry();
   const points = [];
   const angleStep = Math.PI / 180; // Step size in radians
 
   // Generate points for the hippopede (figure-eight curve)
-  for (let theta = 0; theta < Math.PI * 2; theta += angleStep) {
-    const x = radius * Math.cos(theta);
-    const y = radius * Math.sin(theta) * Math.sin(inclination);
-    const z = radius * Math.sin(2 * theta) * Math.cos(inclination); // Adjust for inclination
+  for (let t = 0; t < 2 * Math.PI; t += angleStep) {
+    let x, y, z;
+
+    if (isMoon) {
+      // Moon's motion: add the complexities of its path
+      x = radius * Math.cos(t) + radius * 0.1 * Math.sin(2 * t); // Hippopede motion
+      y = radius * Math.sin(t) * Math.sin(tilt);
+      z = radius * Math.sin(2 * t) * Math.cos(tilt); // Adjust for inclination
+    } else {
+      // Sun's motion: simpler path
+      x = radius * Math.cos(t) + 0.5 * Math.sin(2 * t); // Slightly oscillating path
+      y = radius * Math.sin(t) * Math.sin(tilt);
+      z = radius * Math.sin(2 * t) * Math.cos(tilt); // Adjust for inclination
+    }
+
     points.push(x, y, z);
   }
 
@@ -131,3 +149,4 @@ window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
 });
+
