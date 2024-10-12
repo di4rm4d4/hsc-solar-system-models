@@ -38,18 +38,21 @@ scene.add(celestialGroups);
 
 // Define celestial bodies: Sun, Moon, and Mercury
 const celestialBodies = [
-  { name: 'Sun', radius: 20, speed: 0.02, color: 0xffff00, tilt: Math.PI / 180 * 7 }, // Tilt approx 7°
-  { name: 'Moon', radius: 6, speed: 0.055, color: 0xcccccc, tilt: Math.PI / 180 * 5 }, // Inclination ~ 5°
-  { name: 'Mercury', radius: 22, speed: 0.047, color: 0xaaaaaa, tilt: Math.PI / 180 * 7 } // Tilt approx 7°
+  { name: 'Sun', radius: 20, speed: 0.02, color: 0xffff00, tilt: Math.PI / 180 * 7, bodyRadius: 0.8 }, // Small sphere for Sun
+  { name: 'Moon', radius: 6, speed: 0.055, color: 0xcccccc, tilt: Math.PI / 180 * 5, bodyRadius: 0.5 }, // Small sphere for Moon
+  { name: 'Mercury', radius: 22, speed: 0.047, color: 0xaaaaaa, tilt: Math.PI / 180 * 7, bodyRadius: 0.5 } // Small sphere for Mercury
 ];
 
-// Function to create planetary spheres and label them
+// Object to hold planet meshes for easy reference during movement
+const planetObjects = {};
+
+// Function to create planetary spheres, hippopede motion, and labels
 celestialBodies.forEach(body => {
   // Group for each celestial body
   const bodyGroup = new THREE.Group();
   celestialGroups.add(bodyGroup);
 
-  // Create a single sphere for each celestial body
+  // Create a single wireframe sphere for each celestial body (hippopede visualization)
   const layerGeometry = new THREE.SphereGeometry(body.radius, 64, 64);
   const layerMaterial = new THREE.MeshBasicMaterial({
     color: body.color,
@@ -77,43 +80,31 @@ celestialBodies.forEach(body => {
   labelSprite.position.set(body.radius + 3, 0, 0);
   bodyGroup.add(labelSprite);
 
-  // Create hippopede motion for the Sun
-  if (body.name === 'Sun') {
-    createHippopede(bodyGroup, body.radius, body.tilt, body.speed);
-  }
+  // Create hippopede motion for the Sun, Moon, and Mercury
+  createHippopede(bodyGroup, body.radius, body.tilt, body.speed);
 
-  // Create hippopede motion for the Moon
-  if (body.name === 'Moon') {
-    createHippopede(bodyGroup, body.radius, body.tilt, body.speed, true);
-  }
+  // Create small spheres (planets) to represent Sun, Moon, Mercury
+  const planetGeometry = new THREE.SphereGeometry(body.bodyRadius, 32, 32);
+  const planetMaterial = new THREE.MeshBasicMaterial({ color: body.color });
+  const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
+  planetMesh.position.set(body.radius, 0, 0); // Start at the edge of the orbit
+  bodyGroup.add(planetMesh);
 
-  // Create hippopede motion for Mercury
-  if (body.name === 'Mercury') {
-    createHippopede(bodyGroup, body.radius, body.tilt, body.speed);
-  }
+  // Store reference for movement updates
+  planetObjects[body.name] = { mesh: planetMesh, radius: body.radius, tilt: body.tilt, speed: body.speed };
 });
 
-// Function to create the hippopede motion
-function createHippopede(group, radius, tilt, speed, isMoon = false) {
+// Function to create the hippopede motion visualization
+function createHippopede(group, radius, tilt, speed) {
   const hippopedeGeometry = new THREE.BufferGeometry();
   const points = [];
   const angleStep = Math.PI / 180; // Step size in radians
 
   // Generate points for the hippopede (figure-eight curve)
   for (let t = 0; t < 2 * Math.PI; t += angleStep) {
-    let x, y, z;
-
-    if (isMoon) {
-      // Moon's motion: add the complexities of its path
-      x = radius * Math.cos(t) + radius * 0.1 * Math.sin(2 * t); // Hippopede motion
-      y = radius * Math.sin(t) * Math.sin(tilt);
-      z = radius * Math.sin(2 * t) * Math.cos(tilt); // Adjust for inclination
-    } else {
-      // Sun's motion: simpler path
-      x = radius * Math.cos(t) + 0.5 * Math.sin(2 * t); // Slightly oscillating path
-      y = radius * Math.sin(t) * Math.sin(tilt);
-      z = radius * Math.sin(2 * t) * Math.cos(tilt); // Adjust for inclination
-    }
+    const x = radius * Math.cos(t) + 0.5 * Math.sin(2 * t); // Slightly oscillating path
+    const y = radius * Math.sin(t) * Math.sin(tilt);
+    const z = radius * Math.sin(2 * t) * Math.cos(tilt); // Adjust for inclination
 
     points.push(x, y, z);
   }
@@ -124,19 +115,32 @@ function createHippopede(group, radius, tilt, speed, isMoon = false) {
   group.add(hippopedeLine);
 }
 
+// Update planet positions along the hippopede paths over time
+let time = 0;
+function updatePlanetPositions() {
+  time += params.speedFactor * 0.01;
+
+  Object.keys(planetObjects).forEach(name => {
+    const planet = planetObjects[name];
+    const t = time * planet.speed;
+
+    // Use the same equations from the hippopede generation for movement
+    const x = planet.radius * Math.cos(t) + 0.5 * Math.sin(2 * t);
+    const y = planet.radius * Math.sin(t) * Math.sin(planet.tilt);
+    const z = planet.radius * Math.sin(2 * t) * Math.cos(planet.tilt);
+
+    planet.mesh.position.set(x, y, z);
+  });
+}
+
 // Animate Function
 function animate() {
   requestAnimationFrame(animate);
 
-  // Rotate each celestial group's sphere
-  celestialGroups.children.forEach(group => {
-    group.children.forEach(layer => {
-      if (layer.userData.speed) {
-        layer.rotation.y += params.speedFactor * layer.userData.speed;
-      }
-    });
-  });
+  // Update the position of the Sun, Moon, and Mercury along the hippopede paths
+  updatePlanetPositions();
 
+  // Render the scene
   controls.update();
   renderer.render(scene, camera);
 }
