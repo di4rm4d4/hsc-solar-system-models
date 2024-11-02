@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Exodus and Ptolemaic Models</title>
+    <title>Astronomical Models Viewer</title>
     <link href="https://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet">
     <style>
         body {
@@ -51,9 +51,8 @@
     </style>
 </head>
 <body>
-    <!-- Sidebar for information and concept selection -->
     <div id="info-sidebar">
-        <h2>Models Overview</h2>
+        <h2>Astronomical Models</h2>
         <button class="concept-button" onclick="loadModel('exodus')">Exodus Model</button>
         <button class="concept-button" onclick="loadModel('eccentric')">Eccentric</button>
         <button class="concept-button" onclick="loadModel('deferentEpicycle')">Deferent & Epicycle</button>
@@ -63,16 +62,10 @@
             <p>Select a model to view it in the main display area.</p>
         </div>
     </div>
-
-    <!-- 3D render area -->
     <div id="render-area"></div>
-
-    <!-- Load Three.js from CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/OrbitControls.js"></script>
-    
-    <!-- Link to the JavaScript file for 3D models -->
-    <script src="model.js"></script>
+    <script src="models.js"></script>
 </body>
 </html>
 
