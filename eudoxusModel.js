@@ -1,9 +1,9 @@
 // Parameters for Eudoxus's Model
 const params = {
-  speedFactor: 0.005,       // Overall speed multiplier for celestial motions
-  earthRadius: 5,           // Radius of Earth (center of the universe in the model)
-  sphereOpacity: 0.2,       // Opacity for the transparent wireframe spheres
-  labelSize: 3              // Size of the labels
+  speedFactor: 0.005,
+  earthRadius: 5,
+  sphereOpacity: 0.2,
+  labelSize: 3
 };
 
 // Function to initialize and start the model
@@ -14,8 +14,10 @@ export function initModel(container) {
   camera.position.set(0, 50, 70);
 
   const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(container.offsetWidth, container.offsetHeight);
+  renderer.setPixelRatio(window.devicePixelRatio);
   container.appendChild(renderer.domElement);
-  
+
   // Resize renderer to fit container
   function resizeRenderer() {
     const width = container.offsetWidth;
@@ -29,21 +31,33 @@ export function initModel(container) {
   window.addEventListener('resize', resizeRenderer);
 
   // OrbitControls for camera movement
-  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  const controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
 
   // Ambient Light to illuminate the scene uniformly
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.7); // Increased intensity
   scene.add(ambientLight);
+
+  // Directional light for better contrast
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+  directionalLight.position.set(10, 10, 10);
+  scene.add(directionalLight);
 
   // Earth's Static Mesh with Texture
   const textureLoader = new THREE.TextureLoader();
   const earthGeometry = new THREE.SphereGeometry(params.earthRadius, 64, 64);
-  textureLoader.load('land_ocean_ice_8192.png', (texture) => {
-    const earthMaterial = new THREE.MeshStandardMaterial({ map: texture });
-    const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
-    scene.add(earthMesh);
-  });
+  textureLoader.load(
+    'land_ocean_ice_8192.png',
+    (texture) => {
+      const earthMaterial = new THREE.MeshStandardMaterial({ map: texture });
+      const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
+      scene.add(earthMesh);
+    },
+    undefined,
+    (error) => {
+      console.error('Texture load error:', error); // Log if texture fails to load
+    }
+  );
 
   // Group to hold all celestial spheres and motions
   const celestialGroups = new THREE.Group();
@@ -156,5 +170,6 @@ export function initModel(container) {
 
   animate();
 }
+
 
 
