@@ -3,58 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Eudoxus Model Viewer</title>
+  <title>Eudoxus Solar System Model</title>
   <style>
-    /* Basic styling */
     #render-area {
-      width: calc(100% - 300px);
-      height: 80vh;
-      display: none; /* Initially hidden */
-      margin: 0 auto;
-      border: 1px solid #ccc;
-    }
-    #control-panel {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
+      width: 100%;
+      height: 100vh;
+      background-color: black;
     }
   </style>
 </head>
 <body>
+  <button id="show-model">Eudoxus Model</button>
+  <div id="render-area" style="display: none;"></div>
 
-  <div id="control-panel">
-    <button id="eudoxusButton">Eudoxus Model</button>
-  </div>
-
-  <!-- Container for the 3D model -->
-  <div id="render-area"></div>
-
-  <!-- Load Three.js library from CDN -->
+  <!-- Import main THREE.js module -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
 
-  <!-- Import the main THREE.js module -->
-  <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.min.js"></script>
-
-  <!-- Import OrbitControls globally (make sure to place this BEFORE eudoxusModel.js) -->
+  <!-- Import OrbitControls globally -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
 
   <!-- Import your eudoxusModel.js module -->
   <script type="module" src="eudoxusModel.js"></script>
 
-  <!-- Include your Eudoxus model JavaScript -->
+  <!-- Script to initialize the model display on button click -->
   <script type="module">
-    // Import your Eudoxus JavaScript code here
-    import * as EudoxusModel from './eudoxusModel.js';
-
-    // Handle button click to display the model
-    document.getElementById('eudoxusButton').addEventListener('click', () => {
+    import { initModel } from './eudoxusModel.js';
+    document.getElementById('show-model').addEventListener('click', () => {
       const renderArea = document.getElementById('render-area');
-      renderArea.style.display = 'block'; // Show the render area
-      EudoxusModel.initModel(renderArea); // Initialize the model inside the div
+      renderArea.style.display = 'block'; // Show render area
+      initModel(renderArea); // Initialize model rendering
     });
   </script>
-
 </body>
 </html>
 
