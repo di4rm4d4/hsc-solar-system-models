@@ -8,7 +8,7 @@ const params = {
 
 // Scene & Renderer Setup
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 300) / window.innerHeight, 1, 1000);
+const camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 400) / window.innerHeight, 1, 1000);
 camera.position.set(0, 50, 70); // Adjusted position to better view the geocentric model
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -25,8 +25,8 @@ scene.add(ambientLight);
 
 // Earth's Static Mesh with Texture
 const textureLoader = new THREE.TextureLoader();
-const earthGeometry = new THREE.SphereGeometry(params.earthRadius, 64, 64);
 textureLoader.load('land_ocean_ice_8192.png', (texture) => {
+    const earthGeometry = new THREE.SphereGeometry(params.earthRadius, 64, 64);
     const earthMaterial = new THREE.MeshStandardMaterial({ map: texture });
     const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
     scene.add(earthMesh);
@@ -155,7 +155,7 @@ window.addEventListener('resize', () => {
 
 // Function to resize the canvas when window is resized
 function resizeRenderer() {
-    const width = window.innerWidth - 300; // Sidebar is 300px wide
+    const width = window.innerWidth - 400; // Adjusted for new sidebar width
     const height = window.innerHeight;
     renderer.setSize(width, height);
     camera.aspect = width / height;
