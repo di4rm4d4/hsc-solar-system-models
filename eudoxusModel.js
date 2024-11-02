@@ -1,3 +1,6 @@
+import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.min.js';
+import { OrbitControls } from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/jsm/controls/OrbitControls.js';
+
 // Parameters for Eudoxus's Model
 const params = {
   speedFactor: 0.005,
