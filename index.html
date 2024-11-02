@@ -3,48 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eudoxus Solar System</title>
-    <link href='https://fonts.googleapis.com/css?family=EB Garamond' rel='stylesheet'>
+    <title>Exodus and Ptolemaic Models</title>
+    <link href="https://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet">
     <style>
         body {
             margin: 0;
             display: flex;
             height: 100vh;
+            font-family: 'EB Garamond', serif;
         }
         #info-sidebar {
-            width: 850px;
+            width: 300px;
             background-color: #03396c;
             padding: 20px;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            font-family: 'EB Garamond', font size: 20px;
-            overflow-y: auto;
             color: #FFFFFF;
+            overflow-y: auto;
         }
         #render-area {
             flex-grow: 1;
+            background-color: #000;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #000;
         }
         canvas {
             display: block;
         }
+        .concept-button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #005b96;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .concept-button:hover {
+            background-color: #0074d9;
+        }
+        h2 {
+            text-align: center;
+            margin-top: 0;
+            font-size: 1.5em;
+        }
     </style>
 </head>
 <body>
-    <!-- Sidebar for information -->
+    <!-- Sidebar for information and concept selection -->
     <div id="info-sidebar">
-        <h2>Eudoxus' Planetary System</h2>
-        <p>Eudoxus of Cnidus proposed a model of the solar system using homocentric spheres (a bunch of nested spheres). In this system the Earth is at the center of everythingg and all the other celestial bodies orbit around it.</p>
-        <h3>The Hippopede</h3>
-        <p>The hippopede is an infinity shape that Eudoxus uses to explain something fancy called retrograde motion. Planets unfortunately don't move in perfect circles in the night sky, they go backwards sometimes (what????). To account for this, Eudoxus made them go around in figure 8s..</p>
-        <h4>The Sun</h4>
-        <p>This model only includes the Sun, Moon, and Mercury (sorry TT). The Sun's motion around Earth is explained in three spheres (only 1 is shown here to prevent computer meltdowns). The first sphere represents the rising and setting of the Sun, the second sphere causes the Sun to move across a line in the sky called the ecliptic, and marks the seasonal changes in the Sun's position. The third sphere is what gives the Sun it's hippopide shape. The Sun's speed in the sky varies across the year, and this wacky shape accounts for that. </p>
-        <h4>The Moon</h4>
-        <p>The Moon exhibits a hippopede-like orbit due to its inclination and rotating spheres...</p>
-        <h4>Mercury</h4>
-        <p>Mercury's motion is represented by a figure-eight hippopede pattern...</p>
+        <h2>Models Overview</h2>
+        <button class="concept-button" onclick="loadModel('exodus')">Exodus Model</button>
+        <button class="concept-button" onclick="loadModel('eccentric')">Eccentric</button>
+        <button class="concept-button" onclick="loadModel('deferentEpicycle')">Deferent & Epicycle</button>
+        <button class="concept-button" onclick="loadModel('equant')">Equant Point</button>
+        <button class="concept-button" onclick="loadModel('tusi')">Tusi Couple</button>
+        <div id="concept-info">
+            <p>Select a model to view it in the main display area.</p>
+        </div>
     </div>
 
     <!-- 3D render area -->
@@ -52,10 +69,10 @@
 
     <!-- Load Three.js from CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- Load OrbitControls from CDN -->
     <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/OrbitControls.js"></script>
     
-    <!-- Link to the external JavaScript file -->
-    <script src="scripts.js"></script>
+    <!-- Link to the JavaScript file for 3D models -->
+    <script src="model.js"></script>
 </body>
 </html>
+
