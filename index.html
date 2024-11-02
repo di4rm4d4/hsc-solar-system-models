@@ -12,16 +12,13 @@
             flex-direction: column; /* Stack elements vertically */
             height: 100vh;
             font-family: 'EB Garamond', serif;
+            background-color: white; /* Set background to white */
         }
         #landing-page {
             display: flex;
             justify-content: center;
             align-items: center;
             flex-grow: 1; /* Allow landing page to take up available space */
-            background-color: #03396c;
-            color: #FFFFFF;
-            font-size: 36px;
-            text-align: center;
         }
         #toggle-button {
             padding: 20px;
@@ -65,10 +62,7 @@
 
 <!-- Landing Page -->
 <div id="landing-page">
-    <div>
-        <h1>Welcome to the Eudoxus Solar System Model</h1>
-        <button id="toggle-button">Eudoxus Model</button>
-    </div>
+    <button id="toggle-button">View Eudoxus Model</button>
 </div>
 
 <!-- Eudoxus Model Page -->
@@ -110,6 +104,7 @@ toggleButton.addEventListener('click', () => {
 
 </body>
 </html>
+
 
 
 
