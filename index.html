@@ -16,24 +16,8 @@
   <button id="show-model">Eudoxus Model</button>
   <div id="render-area" style="display: none;"></div>
 
-  <!-- Import main THREE.js module -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
-  <!-- Import OrbitControls globally -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
-
   <!-- Import your eudoxusModel.js module -->
   <script type="module" src="eudoxusModel.js"></script>
-
-  <!-- Script to initialize the model display on button click -->
-  <script type="module">
-    import { initModel } from './eudoxusModel.js';
-    document.getElementById('show-model').addEventListener('click', () => {
-      const renderArea = document.getElementById('render-area');
-      renderArea.style.display = 'block'; // Show render area
-      initModel(renderArea); // Initialize model rendering
-    });
-  </script>
 </body>
 </html>
 
