@@ -9,11 +9,39 @@
         body {
             margin: 0;
             display: flex;
+            flex-direction: column; /* Stack elements vertically */
             height: 100vh;
             font-family: 'EB Garamond', serif;
         }
+        #landing-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1; /* Allow landing page to take up available space */
+            background-color: #03396c;
+            color: #FFFFFF;
+            font-size: 36px;
+            text-align: center;
+        }
+        #toggle-button {
+            padding: 20px;
+            font-size: 24px;
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #toggle-button:hover {
+            background-color: #e67e22;
+        }
+        #eudoxus-page {
+            display: none; /* Hide initially */
+            flex: 1;
+            flex-direction: row;
+        }
         #info-sidebar {
-            width: 400px;  /* Adjusted width */
+            width: 400px;  
             background-color: #03396c;
             padding: 20px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
@@ -35,22 +63,30 @@
 </head>
 <body>
 
-<!-- Sidebar for information -->
-<div id="info-sidebar">
-    <h2>Eudoxus' Planetary System</h2>
-    <p>Eudoxus of Cnidus proposed a model of the solar system using homocentric spheres (a bunch of nested spheres). In this system, the Earth is at the center of everything, and all the other celestial bodies orbit around it.</p>
-    <h3>The Hippopede</h3>
-    <p>The hippopede is an infinity shape that Eudoxus used to explain retrograde motion. Planets sometimes appear to move backward in the night sky. To account for this, Eudoxus represented their motion with a figure-eight pattern.</p>
-    <h4>The Sun</h4>
-    <p>This model only includes the Sun, Moon, and Mercury. The Sun's motion around Earth is explained in three spheres, simplified here. These account for the Sun’s daily rise and set, seasonal position changes, and hippopede motion.</p>
-    <h4>The Moon</h4>
-    <p>The Moon exhibits a hippopede-like orbit due to its inclination and rotating spheres...</p>
-    <h4>Mercury</h4>
-    <p>Mercury's motion is represented by a figure-eight hippopede pattern...</p>
+<!-- Landing Page -->
+<div id="landing-page">
+    <div>
+        <h1>Welcome to the Eudoxus Solar System Model</h1>
+        <button id="toggle-button">Eudoxus Model</button>
+    </div>
 </div>
 
-<!-- 3D render area -->
-<div id="render-area"></div>
+<!-- Eudoxus Model Page -->
+<div id="eudoxus-page">
+    <div id="info-sidebar">
+        <h2>Eudoxus' Planetary System</h2>
+        <p>Eudoxus of Cnidus proposed a model of the solar system using homocentric spheres (a bunch of nested spheres). In this system, the Earth is at the center of everything, and all the other celestial bodies orbit around it.</p>
+        <h3>The Hippopede</h3>
+        <p>The hippopede is an infinity shape that Eudoxus used to explain retrograde motion. Planets sometimes appear to move backward in the night sky. To account for this, Eudoxus represented their motion with a figure-eight pattern.</p>
+        <h4>The Sun</h4>
+        <p>This model only includes the Sun, Moon, and Mercury. The Sun's motion around Earth is explained in three spheres, simplified here. These account for the Sun’s daily rise and set, seasonal position changes, and hippopede motion.</p>
+        <h4>The Moon</h4>
+        <p>The Moon exhibits a hippopede-like orbit due to its inclination and rotating spheres...</p>
+        <h4>Mercury</h4>
+        <p>Mercury's motion is represented by a figure-eight hippopede pattern...</p>
+    </div>
+    <div id="render-area"></div>
+</div>
 
 <!-- Load Three.js from CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -59,6 +95,18 @@
 
 <!-- Link to the external JavaScript file -->
 <script src="scripts.js"></script>
+
+<script>
+// Toggle between landing page and Eudoxus model page
+const landingPage = document.getElementById('landing-page');
+const eudoxusPage = document.getElementById('eudoxus-page');
+const toggleButton = document.getElementById('toggle-button');
+
+toggleButton.addEventListener('click', () => {
+    landingPage.style.display = 'none'; // Hide landing page
+    eudoxusPage.style.display = 'flex'; // Show Eudoxus model page
+});
+</script>
 
 </body>
 </html>
