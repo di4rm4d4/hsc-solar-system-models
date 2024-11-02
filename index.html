@@ -1,30 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Astronomical Models Viewer</title>
-    <link href="https://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet">
-    <style>
-        /* Styles */
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eudoxus Model Viewer</title>
+  <style>
+    /* Basic styling */
+    #render-area {
+      width: calc(100% - 300px);
+      height: 80vh;
+      display: none; /* Initially hidden */
+      margin: 0 auto;
+      border: 1px solid #ccc;
+    }
+    #control-panel {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-    <div id="info-sidebar">
-        <h2>Astronomical Models</h2>
-        <button class="concept-button" onclick="loadModel('exodus')">Exodus Model</button>
-        <button class="concept-button" onclick="loadModel('eccentric')">Eccentric</button>
-        <button class="concept-button" onclick="loadModel('deferentEpicycle')">Deferent & Epicycle</button>
-        <button class="concept-button" onclick="loadModel('equant')">Equant Point</button>
-        <button class="concept-button" onclick="loadModel('tusi')">Tusi Couple</button>
-        <div id="concept-info">
-            <p>Select a model to view it in the main display area.</p>
-        </div>
-    </div>
-    <div id="render-area"></div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/OrbitControls.js"></script>
-    <script src="models.js"></script>
+
+  <div id="control-panel">
+    <button id="eudoxusButton">Eudoxus Model</button>
+  </div>
+
+  <!-- Container for the 3D model -->
+  <div id="render-area"></div>
+
+  <!-- Load Three.js library from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- Include your Eudoxus model JavaScript -->
+  <script type="module">
+    // Import your Eudoxus JavaScript code here
+    import * as EudoxusModel from './eudoxusModel.js';
+
+    // Handle button click to display the model
+    document.getElementById('eudoxusButton').addEventListener('click', () => {
+      const renderArea = document.getElementById('render-area');
+      renderArea.style.display = 'block'; // Show the render area
+      EudoxusModel.initModel(renderArea); // Initialize the model inside the div
+    });
+  </script>
+
 </body>
 </html>
 
