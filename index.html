@@ -1,25 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Eudoxus Solar System Model</title>
-  <style>
-    #render-area {
-      width: 100%;
-      height: 100vh;
-      background-color: black;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eudoxus Solar System</title>
+    <link href="https://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            font-family: 'EB Garamond', serif;
+        }
+        #info-sidebar {
+            width: 850px;
+            background-color: #03396c;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            color: #FFFFFF;
+            overflow-y: auto;
+            font-size: 20px;
+        }
+        #render-area {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000;
+        }
+        canvas {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-  <button id="show-model">Eudoxus Model</button>
-  <div id="render-area" style="display: none;"></div>
 
-  <!-- Import your eudoxusModel.js module -->
-  <script type="module" src="eudoxusModel.js"></script>
+<!-- Sidebar for information -->
+<div id="info-sidebar">
+    <h2>Eudoxus' Planetary System</h2>
+    <p>Eudoxus of Cnidus proposed a model of the solar system using homocentric spheres (a bunch of nested spheres). In this system, the Earth is at the center of everything, and all the other celestial bodies orbit around it.</p>
+    <h3>The Hippopede</h3>
+    <p>The hippopede is an infinity shape that Eudoxus used to explain retrograde motion. Planets sometimes appear to move backward in the night sky. To account for this, Eudoxus represented their motion with a figure-eight pattern.</p>
+    <h4>The Sun</h4>
+    <p>This model only includes the Sun, Moon, and Mercury. The Sun's motion around Earth is explained in three spheres, simplified here. These account for the Sun’s daily rise and set, seasonal position changes, and hippopede motion.</p>
+    <h4>The Moon</h4>
+    <p>The Moon exhibits a hippopede-like orbit due to its inclination and rotating spheres...</p>
+    <h4>Mercury</h4>
+    <p>Mercury's motion is represented by a figure-eight hippopede pattern...</p>
+</div>
+
+<!-- 3D render area -->
+<div id="render-area"></div>
+
+<!-- Load Three.js from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<!-- Load OrbitControls from CDN -->
+<script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/OrbitControls.js"></script>
+
+<!-- Link to the external JavaScript file -->
+<script src="scripts.js"></script>
+
 </body>
 </html>
 
-  
 
