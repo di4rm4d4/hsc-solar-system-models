@@ -4,8 +4,8 @@ const camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 300) / windo
 camera.position.set(0, 50, 70);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth - 300, window.innerHeight);
 document.getElementById('render-area').appendChild(renderer.domElement);
-resizeRenderer();
 
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
@@ -13,19 +13,32 @@ controls.enableDamping = true;
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
-// Utility functions
+// Current model animation function placeholder
+let currentAnimation = null;
+
+// Clear previous objects from the scene
 function clearScene() {
     while (scene.children.length > 0) {
-        scene.remove(scene.children[0]);
+        const child = scene.children[0];
+        if (child instanceof THREE.Mesh || child instanceof THREE.Group) {
+            child.geometry?.dispose();
+            child.material?.dispose();
+        }
+        scene.remove(child);
     }
-    scene.add(ambientLight);
+    scene.add(ambientLight);  // Ensure light remains in the scene
+    currentAnimation = null;  // Stop previous animation
 }
 
+// Update sidebar info text
 function updateInfo(text) {
     document.getElementById('concept-info').innerHTML = `<p>${text}</p>`;
 }
 
+// Load specific model based on the selected concept
 function loadModel(concept) {
+    clearScene(); // Clear previous model
+
     if (concept === 'exodus') loadExodus();
     else if (concept === 'eccentric') loadEccentric();
     else if (concept === 'deferentEpicycle') loadDeferentEpicycle();
@@ -35,7 +48,6 @@ function loadModel(concept) {
 
 // Exodus Model
 function loadExodus() {
-    clearScene();
     const info = "Exodus model demonstrating celestial spheres and hippopede motion.";
     updateInfo(info);
 
@@ -52,7 +64,7 @@ function loadExodus() {
     const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
     scene.add(earthMesh);
 
-    // Celestial spheres (Sun, Moon, Mercury)
+    // Celestial bodies (Sun, Moon, Mercury)
     const celestialBodies = [
         { name: 'Sun', radius: 20, speed: 0.02, color: 0xffff00, tilt: Math.PI / 180 * 7, bodyRadius: 0.8 },
         { name: 'Moon', radius: 6, speed: 0.055, color: 0xcccccc, tilt: Math.PI / 180 * 5, bodyRadius: 0.5 },
@@ -73,7 +85,6 @@ function loadExodus() {
             wireframe: true
         });
         const layerMesh = new THREE.Mesh(layerGeometry, layerMaterial);
-        layerMesh.userData = { speed: body.speed };
         bodyGroup.add(layerMesh);
 
         const planetGeometry = new THREE.SphereGeometry(body.bodyRadius, 32, 32);
@@ -85,7 +96,7 @@ function loadExodus() {
         planetObjects[body.name] = { mesh: planetMesh, radius: body.radius, tilt: body.tilt, speed: body.speed };
     });
 
-    function animateExodus() {
+    currentAnimation = function animateExodus() {
         Object.keys(planetObjects).forEach(name => {
             const planet = planetObjects[name];
             const t = Date.now() * planet.speed * params.speedFactor;
@@ -98,37 +109,33 @@ function loadExodus() {
 
         controls.update();
         renderer.render(scene, camera);
-        requestAnimationFrame(animateExodus);
-    }
-    animateExodus();
+        if (currentAnimation) requestAnimationFrame(currentAnimation);
+    };
+    requestAnimationFrame(currentAnimation);
 }
 
-// Placeholder for other models
+// Placeholder models
 function loadEccentric() {
-    clearScene();
     updateInfo("Eccentric model with Earth off-center.");
-    // Implement similar celestial object placements and rotations for Eccentric model
+    // Setup 3D objects and animation for Eccentric model here
 }
 
 function loadDeferentEpicycle() {
-    clearScene();
     updateInfo("Deferent & Epicycle model with celestial body on epicycle.");
-    // Implement celestial objects and animations for Deferent & Epicycle model
+    // Setup 3D objects and animation for Deferent & Epicycle model here
 }
 
 function loadEquant() {
-    clearScene();
     updateInfo("Equant model with uniform motion around an off-center point.");
-    // Implement celestial objects and animations for Equant model
+    // Setup 3D objects and animation for Equant model here
 }
 
 function loadTusi() {
-    clearScene();
     updateInfo("Tusi Couple with circular motion producing linear motion.");
-    // Implement celestial objects and animations for Tusi Couple
+    // Setup 3D objects and animation for Tusi Couple here
 }
 
-// Resize renderer on window resize
+// Handle window resize
 window.addEventListener('resize', resizeRenderer);
 function resizeRenderer() {
     const width = window.innerWidth - 300;
