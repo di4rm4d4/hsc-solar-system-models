@@ -1,0 +1,10 @@
+#info-sidebar {
+    width: 400px;  
+    background-color: #03396c;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    color: #FFFFFF;
+    font-size: 20px;
+    overflow-y: auto; /* Allow scrolling if content exceeds height */
+    height: 100vh; /* Full height of the viewport */
+}
