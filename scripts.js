@@ -164,20 +164,34 @@ function resizeRenderer() {
 
 // Initialize Ptolemy's model
 function initPtolemyModel() {
+    // Clear any previous content in the render area
+    const renderArea = document.getElementById('render-area-ptolemy');
+    renderArea.innerHTML = ''; // Clear previous canvas elements
+
+    // Scene, Camera, and Renderer Setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 400) / window.innerHeight, 1, 1000);
     camera.position.set(0, 50, 100);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    document.getElementById('render-area-ptolemy').appendChild(renderer.domElement);
     renderer.setSize(window.innerWidth - 400, window.innerHeight);
+    renderer.setClearColor(0x000000, 1); // Set a black background for contrast
+    renderArea.appendChild(renderer.domElement);
 
+    // Orbit Controls for Camera
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+    controls.update();
 
-    // Light setup
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    // Ambient Light for overall illumination
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
     scene.add(ambientLight);
+
+    // Directional Light to highlight objects
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(50, 100, 50).normalize();
+    scene.add(directionalLight);
 
     // Earth (center of the universe in Ptolemy's model)
     const earthGeometry = new THREE.SphereGeometry(5, 64, 64);
@@ -193,19 +207,22 @@ function initPtolemyModel() {
     eccentricOrbit.position.set(10, 0, 0); // Offset for eccentric circle
     scene.add(eccentricOrbit);
 
-    // Epicycle
+    // Epicycle (small circle within the main orbit)
     const epicycleRadius = 5;
     const epicycleGeometry = new THREE.RingGeometry(epicycleRadius, epicycleRadius + 0.5, 32);
     const epicycleMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
     const epicycleOrbit = new THREE.Mesh(epicycleGeometry, epicycleMaterial);
     epicycleOrbit.rotation.x = Math.PI / 2;
-    epicycleOrbit.position.set(20, 0, 0); // Position along the eccentric circle
+    epicycleOrbit.position.set(20, 0, 0); // Positioned along the eccentric orbit
     scene.add(epicycleOrbit);
 
-    // Animate the Ptolemy model
+    // Animation Loop
     function animatePtolemy() {
         requestAnimationFrame(animatePtolemy);
-        epicycleOrbit.rotation.z += 0.01; // Epicycle rotation
+
+        // Rotate the epicycle to simulate motion
+        epicycleOrbit.rotation.z += 0.01; // Adjust speed as needed
+
         controls.update();
         renderer.render(scene, camera);
     }
