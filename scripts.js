@@ -161,3 +161,58 @@ function resizeRenderer() {
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
 }
+
+// Initialize Ptolemy's model
+function initPtolemyModel() {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 400) / window.innerHeight, 1, 1000);
+    camera.position.set(0, 50, 100);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    document.getElementById('render-area-ptolemy').appendChild(renderer.domElement);
+    renderer.setSize(window.innerWidth - 400, window.innerHeight);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    // Light setup
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+
+    // Earth (center of the universe in Ptolemy's model)
+    const earthGeometry = new THREE.SphereGeometry(5, 64, 64);
+    const earthMaterial = new THREE.MeshStandardMaterial({ color: 0x123456 });
+    const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
+    scene.add(earthMesh);
+
+    // Eccentric circle (orbit offset from Earth)
+    const eccentricGeometry = new THREE.RingGeometry(20, 21, 64);
+    const eccentricMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide });
+    const eccentricOrbit = new THREE.Mesh(eccentricGeometry, eccentricMaterial);
+    eccentricOrbit.rotation.x = Math.PI / 2;
+    eccentricOrbit.position.set(10, 0, 0); // Offset for eccentric circle
+    scene.add(eccentricOrbit);
+
+    // Epicycle
+    const epicycleRadius = 5;
+    const epicycleGeometry = new THREE.RingGeometry(epicycleRadius, epicycleRadius + 0.5, 32);
+    const epicycleMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide });
+    const epicycleOrbit = new THREE.Mesh(epicycleGeometry, epicycleMaterial);
+    epicycleOrbit.rotation.x = Math.PI / 2;
+    epicycleOrbit.position.set(20, 0, 0); // Position along the eccentric circle
+    scene.add(epicycleOrbit);
+
+    // Animate the Ptolemy model
+    function animatePtolemy() {
+        requestAnimationFrame(animatePtolemy);
+        epicycleOrbit.rotation.z += 0.01; // Epicycle rotation
+        controls.update();
+        renderer.render(scene, camera);
+    }
+    animatePtolemy();
+}
+
+// Initialize Ptolemy model when switching to Ptolemy page
+ptolemyButton.addEventListener('click', () => {
+    initPtolemyModel();
+});
