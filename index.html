@@ -58,7 +58,7 @@
             position: relative;
         }
 
-        #render-area {
+        #render-area, #render-area-ptolemy {
             flex-grow: 1;
             display: flex;
             align-items: center;
@@ -86,7 +86,8 @@
 <div id="eudoxus-page">
     <div id="info-sidebar">
         <h2>Eudoxus' Planetary System</h2>
-        <!-- Details about Eudoxus' model -->
+        <p>Eudoxus of Cnidus proposed a model of the solar system using homocentric spheres...</p>
+        <!-- Additional content can be added here -->
     </div>
     <div id="render-area"></div>
 </div>
@@ -95,61 +96,23 @@
 <div id="ptolemy-page">
     <div id="info-sidebar">
         <h2>Ptolemy's Geocentric Model</h2>
-        <p>Ptolemy's model was a geocentric model of the solar system where Earth is the center, and all celestial bodies move in complex circular paths involving deferents and epicycles.</p>
+        <p>Ptolemy's model was a geocentric model of the solar system where Earth is the center...</p>
         <h3>Key Concepts</h3>
         <ul>
-            <li>**Eccentric Circles**: Planets and the sun follow eccentric orbits that are offset from the Earth.</li>
-            <li>**Epicycles**: Circular paths within larger orbits to account for retrograde motion.</li>
-            <li>**Equant**: A point around which the planets move uniformly, even if they appear non-uniform from Earth.</li>
+            <li><b>Eccentric Circles</b>: Planets and the sun follow eccentric orbits offset from Earth.</li>
+            <li><b>Epicycles</b>: Circular paths within larger orbits to account for retrograde motion.</li>
+            <li><b>Equant</b>: A point around which the planets move uniformly.</li>
         </ul>
-        <!-- Additional details can be added here -->
     </div>
     <div id="render-area-ptolemy"></div>
 </div>
 
 <!-- Load Three.js from CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<!-- Load OrbitControls from CDN -->
 <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/OrbitControls.js"></script>
 
 <!-- Link to the external JavaScript file for the models -->
 <script src="scripts.js"></script>
-
-<script>
-// Toggle between landing page and Eudoxus model page
-const landingPage = document.getElementById('landing-page');
-const eudoxusPage = document.getElementById('eudoxus-page');
-const ptolemyPage = document.getElementById('ptolemy-page');
-const toggleButton = document.getElementById('toggle-button');
-const ptolemyButton = document.getElementById('ptolemy-button');
-
-toggleButton.addEventListener('click', () => {
-    landingPage.style.display = 'none';
-    eudoxusPage.style.display = 'flex';
-});
-
-ptolemyButton.addEventListener('click', () => {
-    landingPage.style.display = 'none';
-    ptolemyPage.style.display = 'flex';
-});
-
-// Handle window resize for both pages
-window.addEventListener('resize', () => {
-    resizeRenderer('render-area');
-    resizeRenderer('render-area-ptolemy');
-});
-
-// Function to resize the canvas in the render area
-function resizeRenderer(areaId) {
-    const width = window.innerWidth - 400;
-    const height = window.innerHeight;
-    const renderer = document.getElementById(areaId).querySelector('canvas');
-    if (renderer) {
-        renderer.width = width;
-        renderer.height = height;
-    }
-}
-</script>
 
 </body>
 </html>
