@@ -14,12 +14,14 @@
             font-family: 'EB Garamond', serif;
             background-color: white; /* Set background to white */
         }
+
         #landing-page {
             display: flex;
             justify-content: center;
             align-items: center;
             flex-grow: 1; /* Allow landing page to take up available space */
         }
+
         #toggle-button {
             padding: 20px;
             font-size: 24px;
@@ -29,30 +31,40 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
+
         #toggle-button:hover {
             background-color: #e67e22;
         }
+
         #eudoxus-page {
             display: none; /* Hide initially */
             flex: 1;
-            flex-direction: row;
+            flex-direction: row; /* Align children in a row */
+            margin: 0; /* Remove default margins */
+            padding: 0; /* Remove default padding */
         }
+
         #info-sidebar {
             width: 400px;  
             background-color: #03396c;
             padding: 20px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
             color: #FFFFFF;
-            overflow-y: auto;
             font-size: 20px;
+            overflow-y: auto; /* Allow scrolling if content exceeds height */
+            height: 100vh; /* Full height of the viewport */
         }
+
         #render-area {
             flex-grow: 1;
             display: flex;
             align-items: center;
             justify-content: center;
             background-color: #000;
+            margin: 0; /* Remove margins to avoid black borders */
+            padding: 0; /* Remove padding */
         }
+
         canvas {
             display: block;
         }
@@ -100,6 +112,20 @@ toggleButton.addEventListener('click', () => {
     landingPage.style.display = 'none'; // Hide landing page
     eudoxusPage.style.display = 'flex'; // Show Eudoxus model page
 });
+
+// Handle window resize
+window.addEventListener('resize', () => {
+    resizeRenderer();
+});
+
+// Function to resize the canvas when window is resized
+function resizeRenderer() {
+    const width = window.innerWidth - 400; // Adjusted to account for the sidebar width
+    const height = window.innerHeight;
+    renderer.setSize(width, height);
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+}
 </script>
 
 </body>
