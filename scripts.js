@@ -195,11 +195,6 @@ function initPtolemyModel() {
     const renderAreaPtolemy = document.getElementById('render-area-ptolemy');
     renderAreaPtolemy.innerHTML = ''; // Clear previous content
 
-    // Additional Ptolemy model code goes here...
-
-    const renderAreaPtolemy = document.getElementById('render-area-ptolemy');
-    renderAreaPtolemy.innerHTML = '';
-
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 400) / window.innerHeight, 1, 1000);
     camera.position.set(0, 50, 100);
@@ -217,22 +212,23 @@ function initPtolemyModel() {
     directionalLight.position.set(50, 100, 50).normalize();
     scene.add(directionalLight);
 
+    // Earth mesh
     const earthMesh = new THREE.Mesh(new THREE.SphereGeometry(5, 64, 64), new THREE.MeshStandardMaterial({ color: 0x123456 }));
     scene.add(earthMesh);
 
+    // Eccentric orbit
     const eccentricOrbit = new THREE.Mesh(new THREE.RingGeometry(20, 21, 64), new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide }));
     eccentricOrbit.rotation.x = Math.PI / 2;
-    eccentricOrbit.position.set(10, 0, 0);
     scene.add(eccentricOrbit);
 
+    // Epicycle orbit
     const epicycleOrbit = new THREE.Mesh(new THREE.RingGeometry(5, 5.5, 32), new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide }));
     epicycleOrbit.rotation.x = Math.PI / 2;
-    epicycleOrbit.position.set(20, 0, 0);
     scene.add(epicycleOrbit);
 
     function animatePtolemy() {
         requestAnimationFrame(animatePtolemy);
-        epicycleOrbit.rotation.z += 0.01;
+        epicycleOrbit.rotation.z += 0.01; // Rotate the epicycle
         controls.update();
         renderer.render(scene, camera);
     }
@@ -240,7 +236,6 @@ function initPtolemyModel() {
 
     window.addEventListener('resize', () => resizeRenderer('render-area-ptolemy', camera, renderer));
 }
-
 
 
 
