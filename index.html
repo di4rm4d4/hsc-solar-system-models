@@ -46,7 +46,7 @@
             padding: 0;
         }
 
-        #info-sidebar {
+        .info-sidebar {
             width: 400px;
             background-color: #03396c;
             padding: 20px;
@@ -58,7 +58,7 @@
             position: relative;
         }
 
-        #render-area, #render-area-ptolemy {
+        .render-area {
             flex-grow: 1;
             display: flex;
             align-items: center;
@@ -84,17 +84,17 @@
 
 <!-- Eudoxus Model Page -->
 <div id="eudoxus-page">
-    <div id="info-sidebar">
+    <div class="info-sidebar" id="eudoxus-info">
         <h2>Eudoxus' Planetary System</h2>
         <p>Eudoxus of Cnidus proposed a model of the solar system using homocentric spheres...</p>
         <!-- Additional content can be added here -->
     </div>
-    <div id="render-area"></div>
+    <div class="render-area" id="render-area-eudoxus"></div>
 </div>
 
 <!-- Ptolemy Model Page -->
 <div id="ptolemy-page">
-    <div id="info-sidebar">
+    <div class="info-sidebar" id="ptolemy-info">
         <h2>Ptolemy's Geocentric Model</h2>
         <p>Ptolemy's model was a geocentric model of the solar system where Earth is the center...</p>
         <h3>Key Concepts</h3>
@@ -104,7 +104,7 @@
             <li><b>Equant</b>: A point around which the planets move uniformly.</li>
         </ul>
     </div>
-    <div id="render-area-ptolemy"></div>
+    <div class="render-area" id="render-area-ptolemy"></div>
 </div>
 
 <!-- Load Three.js from CDN -->
