@@ -165,39 +165,38 @@ function resizeRenderer() {
 // Initialize Ptolemy's model
 function initPtolemyModel() {
     // Clear any previous content in the render area
-    const renderArea = document.getElementById('render-area-ptolemy');
-    renderArea.innerHTML = ''; // Clear previous canvas elements
+    const renderAreaPtolemy = document.getElementById('render-area-ptolemy');
+    renderAreaPtolemy.innerHTML = ''; // Clear previous canvas elements
 
-    // Scene, Camera, and Renderer Setup
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 400) / window.innerHeight, 1, 1000);
-    camera.position.set(0, 50, 100);
+    // Unique scene, camera, and renderer for Ptolemy model
+    const ptolemyScene = new THREE.Scene();
+    const ptolemyCamera = new THREE.PerspectiveCamera(45, (window.innerWidth - 400) / window.innerHeight, 1, 1000);
+    ptolemyCamera.position.set(0, 50, 100);
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth - 400, window.innerHeight);
-    renderer.setClearColor(0x000000, 1); // Set a black background for contrast
-    renderArea.appendChild(renderer.domElement);
+    const ptolemyRenderer = new THREE.WebGLRenderer({ antialias: true });
+    ptolemyRenderer.setSize(window.innerWidth - 400, window.innerHeight);
+    ptolemyRenderer.setClearColor(0x000000, 1); // Set a black background for contrast
+    renderAreaPtolemy.appendChild(ptolemyRenderer.domElement);
 
     // Orbit Controls for Camera
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.update();
+    const ptolemyControls = new THREE.OrbitControls(ptolemyCamera, ptolemyRenderer.domElement);
+    ptolemyControls.enableDamping = true;
+    ptolemyControls.dampingFactor = 0.05;
 
     // Ambient Light for overall illumination
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-    scene.add(ambientLight);
+    ptolemyScene.add(ambientLight);
 
     // Directional Light to highlight objects
     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
     directionalLight.position.set(50, 100, 50).normalize();
-    scene.add(directionalLight);
+    ptolemyScene.add(directionalLight);
 
     // Earth (center of the universe in Ptolemy's model)
     const earthGeometry = new THREE.SphereGeometry(5, 64, 64);
     const earthMaterial = new THREE.MeshStandardMaterial({ color: 0x123456 });
     const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
-    scene.add(earthMesh);
+    ptolemyScene.add(earthMesh);
 
     // Eccentric circle (orbit offset from Earth)
     const eccentricGeometry = new THREE.RingGeometry(20, 21, 64);
@@ -205,7 +204,7 @@ function initPtolemyModel() {
     const eccentricOrbit = new THREE.Mesh(eccentricGeometry, eccentricMaterial);
     eccentricOrbit.rotation.x = Math.PI / 2;
     eccentricOrbit.position.set(10, 0, 0); // Offset for eccentric circle
-    scene.add(eccentricOrbit);
+    ptolemyScene.add(eccentricOrbit);
 
     // Epicycle (small circle within the main orbit)
     const epicycleRadius = 5;
@@ -214,22 +213,35 @@ function initPtolemyModel() {
     const epicycleOrbit = new THREE.Mesh(epicycleGeometry, epicycleMaterial);
     epicycleOrbit.rotation.x = Math.PI / 2;
     epicycleOrbit.position.set(20, 0, 0); // Positioned along the eccentric orbit
-    scene.add(epicycleOrbit);
+    ptolemyScene.add(epicycleOrbit);
 
-    // Animation Loop
+    // Animation Loop for Ptolemy model
     function animatePtolemy() {
         requestAnimationFrame(animatePtolemy);
 
         // Rotate the epicycle to simulate motion
         epicycleOrbit.rotation.z += 0.01; // Adjust speed as needed
 
-        controls.update();
-        renderer.render(scene, camera);
+        ptolemyControls.update();
+        ptolemyRenderer.render(ptolemyScene, ptolemyCamera);
     }
     animatePtolemy();
+
+    // Resize handler for Ptolemy model renderer
+    function resizePtolemyRenderer() {
+        const width = window.innerWidth - 400;
+        const height = window.innerHeight;
+        ptolemyRenderer.setSize(width, height);
+        ptolemyCamera.aspect = width / height;
+        ptolemyCamera.updateProjectionMatrix();
+    }
+
+    // Attach resize event for Ptolemy model renderer
+    window.addEventListener('resize', resizePtolemyRenderer);
 }
 
 // Initialize Ptolemy model when switching to Ptolemy page
 ptolemyButton.addEventListener('click', () => {
     initPtolemyModel();
 });
+
