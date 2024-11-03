@@ -196,7 +196,51 @@ function initPtolemyModel() {
     renderAreaPtolemy.innerHTML = ''; // Clear previous content
 
     // Additional Ptolemy model code goes here...
+
+    const renderAreaPtolemy = document.getElementById('render-area-ptolemy');
+    renderAreaPtolemy.innerHTML = '';
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 400) / window.innerHeight, 1, 1000);
+    camera.position.set(0, 50, 100);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth - 400, window.innerHeight);
+    renderer.setClearColor(0x000000, 1);
+    renderAreaPtolemy.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(50, 100, 50).normalize();
+    scene.add(directionalLight);
+
+    const earthMesh = new THREE.Mesh(new THREE.SphereGeometry(5, 64, 64), new THREE.MeshStandardMaterial({ color: 0x123456 }));
+    scene.add(earthMesh);
+
+    const eccentricOrbit = new THREE.Mesh(new THREE.RingGeometry(20, 21, 64), new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide }));
+    eccentricOrbit.rotation.x = Math.PI / 2;
+    eccentricOrbit.position.set(10, 0, 0);
+    scene.add(eccentricOrbit);
+
+    const epicycleOrbit = new THREE.Mesh(new THREE.RingGeometry(5, 5.5, 32), new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide }));
+    epicycleOrbit.rotation.x = Math.PI / 2;
+    epicycleOrbit.position.set(20, 0, 0);
+    scene.add(epicycleOrbit);
+
+    function animatePtolemy() {
+        requestAnimationFrame(animatePtolemy);
+        epicycleOrbit.rotation.z += 0.01;
+        controls.update();
+        renderer.render(scene, camera);
+    }
+    animatePtolemy();
+
+    window.addEventListener('resize', () => resizeRenderer('render-area-ptolemy', camera, renderer));
 }
+
 
 
 
