@@ -82,17 +82,7 @@
         </div>
     </div>
 
-    <!-- Include Three.js and OrbitControls as ES Modules -->
-    <script type="module">
-        import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js';
-        import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
-
-        // Expose THREE and OrbitControls to the global scope for use in eudoxusModel.js
-        window.THREE = THREE;
-        window.OrbitControls = OrbitControls;
-    </script>
-
-    <!-- Link to the external JavaScript file for the Eudoxus model -->
-    <script type="module" src="eudoxusModel.js"></script>
+    <!-- Import eudoxusModel.js as an ES module -->
+    <script type="module" src="./eudoxusModel.js"></script>
 </body>
 </html>
