@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ancient Astronomy Models</title>
+    <title>Eudoxus Model</title>
     <link href="https://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet">
     <style>
         body {
@@ -23,7 +23,7 @@
             flex-grow: 1;
         }
 
-        #toggle-button, #ptolemy-button {
+        #toggle-button {
             padding: 20px;
             margin: 10px;
             font-size: 24px;
@@ -34,11 +34,11 @@
             transition: background-color 0.3s;
         }
 
-        #toggle-button:hover, #ptolemy-button:hover {
+        #toggle-button:hover {
             background-color: #e67e22;
         }
 
-        #eudoxus-page, #ptolemy-page {
+        #eudoxus-page {
             display: none;
             flex: 1;
             flex-direction: row;
@@ -79,7 +79,6 @@
 <!-- Landing Page -->
 <div id="landing-page">
     <button id="toggle-button">View Eudoxus Model</button>
-    <button id="ptolemy-button">View Ptolemy's Model</button>
 </div>
 
 <!-- Eudoxus Model Page -->
@@ -92,21 +91,6 @@
     <div class="render-area" id="render-area-eudoxus"></div>
 </div>
 
-<!-- Ptolemy Model Page -->
-<div id="ptolemy-page">
-    <div class="info-sidebar" id="ptolemy-info">
-        <h2>Ptolemy's Geocentric Model</h2>
-        <p>Ptolemy's model was a geocentric model of the solar system where Earth is the center...</p>
-        <h3>Key Concepts</h3>
-        <ul>
-            <li><b>Eccentric Circles</b>: Planets and the sun follow eccentric orbits offset from Earth.</li>
-            <li><b>Epicycles</b>: Circular paths within larger orbits to account for retrograde motion.</li>
-            <li><b>Equant</b>: A point around which the planets move uniformly.</li>
-        </ul>
-    </div>
-    <div class="render-area" id="render-area-ptolemy"></div>
-</div>
-
 <!-- Load Three.js from CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/OrbitControls.js"></script>
@@ -116,3 +100,4 @@
 
 </body>
 </html>
+
