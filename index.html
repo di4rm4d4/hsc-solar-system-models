@@ -1,103 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eudoxus Model</title>
-    <link href="https://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            font-family: 'EB Garamond', serif;
-            background-color: white;
-        }
-
-        #landing-page {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            flex-grow: 1;
-        }
-
-        #toggle-button {
-            padding: 20px;
-            margin: 10px;
-            font-size: 24px;
-            background-color: #f39c12;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        #toggle-button:hover {
-            background-color: #e67e22;
-        }
-
-        #eudoxus-page {
-            display: none;
-            flex: 1;
-            flex-direction: row;
-            margin: 0;
-            padding: 0;
-        }
-
-        .info-sidebar {
-            width: 400px;
-            background-color: #03396c;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            color: #FFFFFF;
-            font-size: 20px;
-            overflow-y: auto;
-            height: 100vh;
-            position: relative;
-        }
-
-        .render-area {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #000;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-        }
-
-        canvas {
-            display: block;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eudoxus’ Homocentric Sphere Model</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- Landing Page -->
-<div id="landing-page">
-    <button id="toggle-button">View Eudoxus Model</button>
-</div>
+<div class="content">
+  <h1>Eudoxus of Cnidus and the Homocentric Sphere Model</h1>
+  <section id="introduction">
+    <p>
+      Eudoxus' model of celestial motion, based on five principles, was an elegant solution to explaining planetary and stellar movement around a fixed, central Earth. 
+      His model consisted of nested celestial spheres, each contributing to the observed motion of stars, planets, the sun, and the moon.
+    </p>
+  </section>
 
-<!-- Eudoxus Model Page -->
-<div id="eudoxus-page">
-    <div class="info-sidebar" id="eudoxus-info">
-        <h2>Eudoxus' Planetary System</h2>
-        <p>Eudoxus of Cnidus proposed a model of the solar system using homocentric spheres...</p>
-        <!-- Additional content can be added here -->
+  <section id="principles">
+    <h2>Key Principles of Eudoxus' Model</h2>
+    <ol>
+      <li>The Earth is the center of the universe.</li>
+      <li>All celestial motion is circular and regular.</li>
+      <li>The path and center of each celestial motion are the same as that of its motion.</li>
+      <li>The center of all celestial motion is Earth.</li>
+    </ol>
+  </section>
+
+  <section id="3d-models">
+    <h2>Interactive Models</h2>
+    <p>Explore the core elements of Eudoxus’ homocentric model below.</p>
+    <div id="model-container">
+      <div id="model-1" class="model"></div>
+      <div id="model-2" class="model"></div>
     </div>
-    <div class="render-area" id="render-area-eudoxus"></div>
+  </section>
 </div>
 
-<!-- Load Three.js from CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/OrbitControls.js"></script>
-
-<!-- Link to the external JavaScript file for the models -->
-<script src="scripts.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
-
