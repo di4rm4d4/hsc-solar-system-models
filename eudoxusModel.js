@@ -30,12 +30,13 @@ function initEudoxusModel() {
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 400) / window.innerHeight, 1, 1000);
     camera.position.set(0, 50, 120);
-    
+
     const renderer = new THREE.WebGLRenderer({ antialias: true });
     renderArea.appendChild(renderer.domElement);
     resizeRenderer('render-area-eudoxus', camera, renderer);
-    
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    // Use OrbitControls imported directly
+    const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
 
     // Ambient and directional light
@@ -122,35 +123,27 @@ function createRetrogradeMotionPath(group, radius) {
     group.add(pathLine);
 }
 
-// Function to create text labels
+// Function to create text label for celestial sphere
 function createTextLabel(text, size) {
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
-    context.font = '24px Arial';
+    context.font = `${size * 10}px Arial`;
     context.fillStyle = 'white';
-    context.fillText(text, 0, 24);
+    context.fillText(text, 0, size * 10);
+
     const texture = new THREE.CanvasTexture(canvas);
-    const labelMaterial = new THREE.SpriteMaterial({ map: texture });
-    const labelSprite = new THREE.Sprite(labelMaterial);
-    labelSprite.scale.set(size, size / 2, 1);
-    return labelSprite;
+    const material = new THREE.SpriteMaterial({ map: texture });
+    const sprite = new THREE.Sprite(material);
+    sprite.scale.set(size, size, 1);
+    return sprite;
 }
 
-// Update sidebar with Eudoxus principles
+// Update sidebar content dynamically
 function updateSidebar() {
-    const sidebar = document.getElementById('sidebar-content');
-    sidebar.innerHTML = `
-        <h3>Eudoxus's Five Principles</h3>
-        <ol>
-            <li>The Earth is the center of the universe.</li>
-            <li>All celestial motion is circular.</li>
-            <li>All celestial motion is regular.</li>
-            <li>The center of the path of any celestial motion is the same as the center of its motion.</li>
-            <li>The center of all celestial motion is the center of the universe.</li>
-        </ol>
-        <p>
-            Eudoxus explained the apparent irregularity of planetary motion with nested spheres, combining
-            multiple spheres' circular rotations to achieve observed planetary paths, including retrograde motion.
-        </p>
+    const sidebarContent = document.getElementById('sidebar-content');
+    sidebarContent.innerHTML = `
+        <h1>Eudoxus's Model - Celestial Spheres</h1>
+        <h3>Overview</h3>
+        <p>This model of celestial spheres describes planetary motions and provides a foundational approach to ancient astronomy.</p>
     `;
 }
