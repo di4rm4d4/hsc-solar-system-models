@@ -1,3 +1,6 @@
+import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js';
+import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
+
 // Toggle for showing Eudoxus's model and landing page
 const toggleButton = document.getElementById('toggle-button');
 const landingPage = document.getElementById('landing-page');
@@ -35,7 +38,7 @@ function initEudoxusModel() {
     renderArea.appendChild(renderer.domElement);
     resizeRenderer('render-area-eudoxus', camera, renderer);
 
-    // Use OrbitControls imported directly
+    // Use OrbitControls
     const controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
 
@@ -147,3 +150,4 @@ function updateSidebar() {
         <p>This model of celestial spheres describes planetary motions and provides a foundational approach to ancient astronomy.</p>
     `;
 }
+ 
