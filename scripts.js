@@ -1,23 +1,13 @@
-// Landing page buttons and model containers
+// Landing page button and Eudoxus model container
 const toggleButton = document.getElementById('toggle-button');
-const ptolemyButton = document.getElementById('ptolemy-button');
-
 const landingPage = document.getElementById('landing-page');
 const eudoxusPage = document.getElementById('eudoxus-page');
-const ptolemyPage = document.getElementById('ptolemy-page');
 
 // Show Eudoxus model on button click
 toggleButton.addEventListener('click', () => {
     landingPage.style.display = 'none';
     eudoxusPage.style.display = 'flex';
     initEudoxusModel();
-});
-
-// Show Ptolemy model on button click
-ptolemyButton.addEventListener('click', () => {
-    landingPage.style.display = 'none';
-    ptolemyPage.style.display = 'flex';
-    initPtolemyModel();
 });
 
 // Function to resize renderer for specific area
@@ -37,30 +27,27 @@ function initEudoxusModel() {
 
     // Parameters for Eudoxus's Model
     const params = {
-        speedFactor: 0.005,       // Overall speed multiplier for celestial motions
-        earthRadius: 5,           // Radius of Earth (center of the universe in the model)
-        sphereOpacity: 0.2,       // Opacity for the transparent wireframe spheres
-        labelSize: 3              // Size of the labels
+        speedFactor: 0.005,
+        earthRadius: 5,
+        sphereOpacity: 0.2,
+        labelSize: 3
     };
 
     // Scene & Renderer Setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 400) / window.innerHeight, 1, 1000);
-    camera.position.set(0, 50, 70); // Adjusted position to better view the geocentric model
+    camera.position.set(0, 50, 70);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
-    document.getElementById('render-area-eudoxus').appendChild(renderer.domElement);
-    resizeRenderer('render-area-eudoxus', camera, renderer); // Set initial canvas size
+    renderArea.appendChild(renderer.domElement);
+    resizeRenderer('render-area-eudoxus', camera, renderer);
 
-    // OrbitControls for camera movement
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
 
-    // Ambient Light to illuminate the scene uniformly
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
-    // Earth's Static Mesh with Texture
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load('land_ocean_ice_8192.png', (texture) => {
         const earthGeometry = new THREE.SphereGeometry(params.earthRadius, 64, 64);
@@ -69,27 +56,21 @@ function initEudoxusModel() {
         scene.add(earthMesh);
     });
 
-    // Group to hold all celestial spheres and motions
     const celestialGroups = new THREE.Group();
     scene.add(celestialGroups);
 
-    // Define celestial bodies: Sun, Moon, and Mercury
     const celestialBodies = [
         { name: 'Sun', radius: 20, speed: 0.02, color: 0xffff00, tilt: Math.PI / 180 * 7, bodyRadius: 0.8 },
         { name: 'Moon', radius: 6, speed: 0.055, color: 0xcccccc, tilt: Math.PI / 180 * 5, bodyRadius: 0.5 },
         { name: 'Mercury', radius: 22, speed: 0.047, color: 0xaaaaaa, tilt: Math.PI / 180 * 7, bodyRadius: 0.5 }
     ];
 
-    // Object to hold planet meshes for easy reference during movement
     const planetObjects = {};
 
-    // Function to create planetary spheres, hippopede motion, and labels
     celestialBodies.forEach(body => {
-        // Group for each celestial body
         const bodyGroup = new THREE.Group();
         celestialGroups.add(bodyGroup);
 
-        // Create a single wireframe sphere for each celestial body (hippopede visualization)
         const layerGeometry = new THREE.SphereGeometry(body.radius, 64, 64);
         const layerMaterial = new THREE.MeshBasicMaterial({
             color: body.color,
@@ -100,10 +81,8 @@ function initEudoxusModel() {
         const layerMesh = new THREE.Mesh(layerGeometry, layerMaterial);
         bodyGroup.add(layerMesh);
 
-        // Add rotation speed
         layerMesh.userData = { speed: body.speed };
 
-        // Create a label for each celestial body
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
         context.font = '24px Arial';
@@ -117,31 +96,26 @@ function initEudoxusModel() {
         labelSprite.position.set(body.radius + 3, 0, 0);
         bodyGroup.add(labelSprite);
 
-        // Create hippopede motion for the Sun, Moon, and Mercury
         createHippopede(bodyGroup, body.radius, body.tilt, body.speed);
 
-        // Create small spheres (planets) to represent Sun, Moon, Mercury
         const planetGeometry = new THREE.SphereGeometry(body.bodyRadius, 32, 32);
         const planetMaterial = new THREE.MeshBasicMaterial({ color: body.color });
         const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
-        planetMesh.position.set(body.radius, 0, 0); // Start at the edge of the orbit
+        planetMesh.position.set(body.radius, 0, 0);
         bodyGroup.add(planetMesh);
 
-        // Store reference for movement updates
         planetObjects[body.name] = { mesh: planetMesh, radius: body.radius, tilt: body.tilt, speed: body.speed, label: labelSprite };
     });
 
-    // Function to create the hippopede motion visualization
     function createHippopede(group, radius, tilt, speed) {
         const hippopedeGeometry = new THREE.BufferGeometry();
         const points = [];
-        const angleStep = Math.PI / 180; // Step size in radians
+        const angleStep = Math.PI / 180;
 
-        // Generate points for the hippopede (figure-eight curve)
         for (let t = 0; t < 2 * Math.PI; t += angleStep) {
-            const x = radius * Math.cos(t) + 0.5 * Math.sin(2 * t); // Slightly oscillating path
+            const x = radius * Math.cos(t) + 0.5 * Math.sin(2 * t);
             const y = radius * Math.sin(t) * Math.sin(tilt);
-            const z = radius * Math.sin(2 * t) * Math.cos(tilt); // Adjust for inclination
+            const z = radius * Math.sin(2 * t) * Math.cos(tilt);
 
             points.push(x, y, z);
         }
@@ -152,90 +126,18 @@ function initEudoxusModel() {
         group.add(hippopedeLine);
     }
 
-    // Update planet positions along the hippopede paths over time
-    let time = 0;
-    function updatePlanetPositions() {
-        time += params.speedFactor; // Ensure time progresses with each frame
+    window.addEventListener('resize', () => resizeRenderer('render-area-eudoxus', camera, renderer));
 
-        Object.keys(planetObjects).forEach(name => {
-            const planet = planetObjects[name];
-            const t = time * planet.speed; // Calculate time-dependent position
-
-            // Use the same equations from the hippopede generation for movement
-            const x = planet.radius * Math.cos(t) + 0.5 * Math.sin(2 * t);
-            const y = planet.radius * Math.sin(t) * Math.sin(planet.tilt);
-            const z = planet.radius * Math.sin(2 * t) * Math.cos(planet.tilt);
-
-            planet.mesh.position.set(x, y, z); // Update planet position
-            planet.label.position.set(x + 3, y, z); // Make the label follow the planet
-        });
-    }
-
-    // Animate Function
     function animate() {
         requestAnimationFrame(animate);
-
-        // Update the position of the Sun, Moon, and Mercury along the hippopede paths
-        updatePlanetPositions();
-
-        // Render the scene
         controls.update();
+
+        celestialGroups.children.forEach(group => {
+            group.rotation.y += group.children[0].userData.speed * params.speedFactor;
+        });
+
         renderer.render(scene, camera);
     }
+
     animate();
-
-    // Handle window resize
-    window.addEventListener('resize', () => {
-        resizeRenderer('render-area-eudoxus', camera, renderer);
-    });
 }
-
-// Initialize Ptolemy model
-function initPtolemyModel() {
-    const renderAreaPtolemy = document.getElementById('render-area-ptolemy');
-    renderAreaPtolemy.innerHTML = ''; // Clear previous content
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 400) / window.innerHeight, 1, 1000);
-    camera.position.set(0, 50, 100);
-
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth - 400, window.innerHeight);
-    renderer.setClearColor(0x000000, 1);
-    renderAreaPtolemy.appendChild(renderer.domElement);
-
-    const controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-
-    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(50, 100, 50).normalize();
-    scene.add(directionalLight);
-
-    // Earth mesh
-    const earthMesh = new THREE.Mesh(new THREE.SphereGeometry(5, 64, 64), new THREE.MeshStandardMaterial({ color: 0x123456 }));
-    scene.add(earthMesh);
-
-    // Eccentric orbit
-    const eccentricOrbit = new THREE.Mesh(new THREE.RingGeometry(20, 21, 64), new THREE.MeshBasicMaterial({ color: 0xffff00, side: THREE.DoubleSide }));
-    eccentricOrbit.rotation.x = Math.PI / 2;
-    scene.add(eccentricOrbit);
-
-    // Epicycle orbit
-    const epicycleOrbit = new THREE.Mesh(new THREE.RingGeometry(5, 5.5, 32), new THREE.MeshBasicMaterial({ color: 0xff0000, side: THREE.DoubleSide }));
-    epicycleOrbit.rotation.x = Math.PI / 2;
-    scene.add(epicycleOrbit);
-
-    function animatePtolemy() {
-        requestAnimationFrame(animatePtolemy);
-        epicycleOrbit.rotation.z += 0.01; // Rotate the epicycle
-        controls.update();
-        renderer.render(scene, camera);
-    }
-    animatePtolemy();
-
-    window.addEventListener('resize', () => resizeRenderer('render-area-ptolemy', camera, renderer));
-}
-
-
-
