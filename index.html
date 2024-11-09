@@ -69,7 +69,6 @@
         <div id="sidebar-content">
             <h1>Eudoxus's Astronomy Model</h1>
             <p>Discover the ancient model created by Eudoxus of Cnidus. This model uses homocentric spheres to explain planetary motion and the apparent retrograde paths.</p>
-            <!-- Sidebar content will be dynamically populated by the updateSidebar() function -->
         </div>
     </div>
 
@@ -83,11 +82,17 @@
         </div>
     </div>
 
-    <!-- Include Three.js Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+    <!-- Include Three.js and OrbitControls as ES Modules -->
+    <script type="module">
+        import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.module.js';
+        import { OrbitControls } from 'https://threejs.org/examples/jsm/controls/OrbitControls.js';
+
+        // Expose THREE and OrbitControls to the global scope for use in eudoxusModel.js
+        window.THREE = THREE;
+        window.OrbitControls = OrbitControls;
+    </script>
 
     <!-- Link to the external JavaScript file for the Eudoxus model -->
-    <script src="eudoxusModel.js"></script>
+    <script type="module" src="eudoxusModel.js"></script>
 </body>
 </html>
