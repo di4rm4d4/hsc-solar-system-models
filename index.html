@@ -1,44 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Eudoxus’ Homocentric Sphere Model</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eudoxus's Model of Astronomy</title>
+    <style>
+        /* General styling for layout and colors */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #sidebar {
+            width: 400px;
+            background-color: #f0f0f0;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+        }
+
+        #sidebar-content {
+            color: #333;
+        }
+
+        #content {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #222;
+            color: white;
+        }
+
+        #render-area-eudoxus {
+            width: 100%;
+            height: 80vh;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+
+        h1, h3 {
+            color: #333;
+        }
+
+        p {
+            margin-bottom: 10px;
+            color: #555;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    </style>
 </head>
 <body>
 
-<div class="content">
-  <h1>Eudoxus of Cnidus and the Homocentric Sphere Model</h1>
-  <section id="introduction">
-    <p>
-      Eudoxus' model of celestial motion, based on five principles, was an elegant solution to explaining planetary and stellar movement around a fixed, central Earth. 
-      His model consisted of nested celestial spheres, each contributing to the observed motion of stars, planets, the sun, and the moon.
-    </p>
-  </section>
-
-  <section id="principles">
-    <h2>Key Principles of Eudoxus' Model</h2>
-    <ol>
-      <li>The Earth is the center of the universe.</li>
-      <li>All celestial motion is circular and regular.</li>
-      <li>The path and center of each celestial motion are the same as that of its motion.</li>
-      <li>The center of all celestial motion is Earth.</li>
-    </ol>
-  </section>
-
-  <section id="3d-models">
-    <h2>Interactive Models</h2>
-    <p>Explore the core elements of Eudoxus’ homocentric model below.</p>
-    <div id="model-container">
-      <div id="model-1" class="model"></div>
-      <div id="model-2" class="model"></div>
+    <!-- Sidebar with information about Eudoxus's Astronomy Model -->
+    <div id="sidebar">
+        <div id="sidebar-content">
+            <h1>Eudoxus's Astronomy Model</h1>
+            <p>Discover the ancient model created by Eudoxus of Cnidus. This model uses homocentric spheres to explain planetary motion and the apparent retrograde paths.</p>
+            <!-- Sidebar content will be dynamically populated by the updateSidebar() function -->
+        </div>
     </div>
-  </section>
-</div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="script.js"></script>
+    <!-- Main Content Area -->
+    <div id="content">
+        <div id="landing-page">
+            <button id="toggle-button" class="button">Explore Eudoxus's Model</button>
+        </div>
+        <div id="eudoxus-page" style="display: none;">
+            <div id="render-area-eudoxus"></div>
+        </div>
+    </div>
 
+    <!-- Include Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+
+    <!-- Link to the external JavaScript file for the Eudoxus model -->
+    <script src="eudoxusModel.js"></script>
 </body>
 </html>
