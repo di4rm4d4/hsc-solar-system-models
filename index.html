@@ -8,42 +8,19 @@
     <style>
         body {
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
             font-family: 'EB Garamond', serif;
             background-color: white;
         }
 
-        #landing-page {
+        .model-section {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            flex-grow: 1;
-        }
-
-        #toggle-button {
-            padding: 20px;
-            margin: 10px;
-            font-size: 24px;
-            background-color: #f39c12;
+            height: 100vh;
+            background-color: #000;
             color: white;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        #toggle-button:hover {
-            background-color: #e67e22;
-        }
-
-        #eudoxus-page {
-            display: none;
-            flex: 1;
-            flex-direction: row;
-            margin: 0;
-            padding: 0;
+            text-align: center;
         }
 
         .info-sidebar {
@@ -54,8 +31,8 @@
             color: #FFFFFF;
             font-size: 20px;
             overflow-y: auto;
+            position: fixed;
             height: 100vh;
-            position: relative;
         }
 
         .render-area {
@@ -64,9 +41,8 @@
             align-items: center;
             justify-content: center;
             background-color: #000;
-            margin: 0;
-            padding: 0;
             height: 100vh;
+            width: 100%;
         }
 
         canvas {
@@ -76,27 +52,28 @@
 </head>
 <body>
 
-<!-- Landing Page -->
-<div id="landing-page">
-    <button id="toggle-button">View Eudoxus Model</button>
-</div>
-
-<!-- Eudoxus Model Page -->
-<div id="eudoxus-page">
+<!-- Main Eudoxus Model Section -->
+<div class="model-section" id="eudoxus-section">
     <div class="info-sidebar" id="eudoxus-info">
         <h2>Eudoxus' Planetary System</h2>
         <p>Eudoxus of Cnidus proposed a model of the solar system using homocentric spheres...</p>
-        <!-- Additional content can be added here -->
     </div>
     <div class="render-area" id="render-area-eudoxus"></div>
+</div>
+
+<!-- Hippopede Motion Section -->
+<div class="model-section" id="hippopede-section">
+    <div class="render-area" id="render-area-hippopede"></div>
+</div>
+
+<!-- Basic Planetary Motion Section -->
+<div class="model-section" id="basic-planets-section">
+    <div class="render-area" id="render-area-basic-planets"></div>
 </div>
 
 <!-- Load Three.js from CDN -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/OrbitControls.js"></script>
-
-<!-- Link to the external JavaScript file for the models -->
 <script src="scripts.js"></script>
-
 </body>
 </html>
