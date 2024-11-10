@@ -4,15 +4,114 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eudoxus Model</title>
-    <link href="https://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=EB+Garamond|Roboto:400,700&display=swap" rel="stylesheet">
     <style>
-        /* Existing styles... */
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #f0f3f7;
+            color: #333;
+        }
 
+        /* Navigation Bar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #03396c;
+            color: #fff;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #005f99;
+            border-radius: 4px;
+        }
+
+        /* Page Sections */
+        #landing-page, #eudoxus-page, #additional-models-container {
+            padding-top: 60px;
+        }
+
+        #landing-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #03396c;
+            color: #fff;
+        }
+
+        #toggle-button {
+            padding: 16px 32px;
+            font-size: 18px;
+            background-color: #f39c12;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: transform 0.3s, background-color 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #toggle-button:hover {
+            transform: scale(1.05);
+            background-color: #e67e22;
+        }
+
+        /* Eudoxus Page */
+        #eudoxus-page {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .info-sidebar {
+            background-color: #03396c;
+            color: #FFFFFF;
+            padding: 20px;
+            width: 300px;
+            font-size: 18px;
+            line-height: 1.6;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .render-area {
+            background-color: #000;
+            width: 80%;
+            max-width: 700px;
+            height: 500px;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Additional Models Container */
         #additional-models-container {
             display: flex;
             justify-content: space-around;
             padding: 20px;
-            background-color: #f8f9fa;
+            flex-wrap: wrap;
         }
 
         .additional-render-area {
@@ -20,26 +119,56 @@
             height: 300px;
             background-color: #000;
             margin: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Scroll and Smooth Transitions */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .additional-render-area {
+                width: 100%;
+            }
+
+            .info-sidebar {
+                width: 80%;
+                margin: 10px;
+            }
         }
     </style>
 </head>
 <body>
 
+<!-- Navbar -->
+<div class="navbar">
+    <h1>Eudoxus Model</h1>
+    <nav>
+        <a href="#landing-page">Home</a>
+        <a href="#eudoxus-page">Main Model</a>
+        <a href="#additional-models-container">Additional Models</a>
+    </nav>
+</div>
+
 <!-- Landing Page -->
 <div id="landing-page">
-    <button id="toggle-button">View Eudoxus Model</button>
+    <button id="toggle-button">Explore Eudoxus Model</button>
 </div>
 
 <!-- Eudoxus Model Page -->
 <div id="eudoxus-page">
-    <div class="info-sidebar" id="eudoxus-info">
+    <div class="info-sidebar">
         <h2>Eudoxus' Planetary System</h2>
         <p>Eudoxus of Cnidus proposed a model of the solar system using homocentric spheres...</p>
     </div>
     <div class="render-area" id="render-area-eudoxus"></div>
 </div>
 
-<!-- Container for additional models -->
+<!-- Additional Models -->
 <div id="additional-models-container">
     <div class="additional-render-area" id="render-area-basic1"></div>
     <div class="additional-render-area" id="render-area-basic2"></div>
