@@ -1,4 +1,3 @@
-// No need for button or landing page elements anymore
 const eudoxusPage = document.getElementById('eudoxus-page');
 
 // Initialize Eudoxus model on page load
@@ -9,8 +8,8 @@ window.addEventListener('load', () => {
 // Function to resize renderer for specific area
 function resizeRenderer(areaId, camera, renderer) {
     const renderArea = document.getElementById(areaId);
-    const width = window.innerWidth - 400;
-    const height = window.innerHeight;
+    const width = renderArea.clientWidth;
+    const height = renderArea.clientHeight;
     renderer.setSize(width, height);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
@@ -26,12 +25,13 @@ function initEudoxusModel() {
         speedFactor: 0.005,
         earthRadius: 5,
         sphereOpacity: 0.2,
-        labelSize: 3
+        labelSize: 3,
+        tiltSeparation: Math.PI / 8 // Approximate 22.5° angle between Spheres 3 and 4
     };
 
     // Scene & Renderer Setup
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 400) / window.innerHeight, 1, 1000);
+    const camera = new THREE.PerspectiveCamera(45, renderArea.clientWidth / renderArea.clientHeight, 1, 1000);
     camera.position.set(0, 50, 70);
 
     const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -44,6 +44,7 @@ function initEudoxusModel() {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(ambientLight);
 
+    // Load Earth Texture
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load('land_ocean_ice_8192.png', (texture) => {
         const earthGeometry = new THREE.SphereGeometry(params.earthRadius, 64, 64);
@@ -61,24 +62,28 @@ function initEudoxusModel() {
         { name: 'Mercury', radius: 22, speed: 0.047, color: 0xaaaaaa, tilt: Math.PI / 180 * 7, bodyRadius: 0.5 }
     ];
 
-    const planetObjects = {};
-
     celestialBodies.forEach(body => {
         const bodyGroup = new THREE.Group();
         celestialGroups.add(bodyGroup);
 
-        const layerGeometry = new THREE.SphereGeometry(body.radius, 64, 64);
-        const layerMaterial = new THREE.MeshBasicMaterial({
-            color: body.color,
-            transparent: true,
-            opacity: params.sphereOpacity,
-            wireframe: true
-        });
-        const layerMesh = new THREE.Mesh(layerGeometry, layerMaterial);
-        bodyGroup.add(layerMesh);
+        // Add nested spheres for each celestial body
+        for (let i = 0; i < 4; i++) {
+            const radius = body.radius + i;
+            const sphereTilt = body.tilt + (i === 2 ? params.tiltSeparation : 0);
+            const layerGeometry = new THREE.SphereGeometry(radius, 64, 64);
+            const layerMaterial = new THREE.MeshBasicMaterial({
+                color: body.color,
+                transparent: true,
+                opacity: params.sphereOpacity,
+                wireframe: true
+            });
+            const layerMesh = new THREE.Mesh(layerGeometry, layerMaterial);
+            layerMesh.rotation.z = sphereTilt;
+            layerMesh.userData = { speed: body.speed * (i + 1) * 0.1 };
+            bodyGroup.add(layerMesh);
+        }
 
-        layerMesh.userData = { speed: body.speed };
-
+        // Planet label and planet sphere
         const canvas = document.createElement('canvas');
         const context = canvas.getContext('2d');
         context.font = '24px Arial';
@@ -89,7 +94,7 @@ function initEudoxusModel() {
         const labelMaterial = new THREE.SpriteMaterial({ map: texture });
         const labelSprite = new THREE.Sprite(labelMaterial);
         labelSprite.scale.set(params.labelSize, params.labelSize / 2, 1);
-        labelSprite.position.set(body.radius + 3, 0, 0);
+        labelSprite.position.set(body.radius + 5, 0, 0);
         bodyGroup.add(labelSprite);
 
         createHippopede(bodyGroup, body.radius, body.tilt, body.speed);
@@ -99,8 +104,6 @@ function initEudoxusModel() {
         const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
         planetMesh.position.set(body.radius, 0, 0);
         bodyGroup.add(planetMesh);
-
-        planetObjects[body.name] = { mesh: planetMesh, radius: body.radius, tilt: body.tilt, speed: body.speed, label: labelSprite };
     });
 
     function createHippopede(group, radius, tilt, speed) {
