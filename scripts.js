@@ -1,23 +1,19 @@
-// Import necessary Three.js components
-import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-
 // Parameters for Eudoxus's Model
 const params = {
-    speedFactor: 0.005,       
-    earthRadius: 5,           
-    sphereOpacity: 0.2,       
-    labelSize: 3              
+    speedFactor: 0.005,       // Overall speed multiplier for celestial motions
+    earthRadius: 5,           // Radius of Earth (center of the universe in the model)
+    sphereOpacity: 0.2,       // Opacity for the transparent wireframe spheres
+    labelSize: 3              // Size of the labels
 };
 
 // Scene & Renderer Setup
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(45, (window.innerWidth - 300) / window.innerHeight, 1, 1000);
-camera.position.set(0, 50, 70);
+camera.position.set(0, 50, 70); // Adjusted position to better view the geocentric model
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 document.getElementById('render-area').appendChild(renderer.domElement);
-resizeRenderer();  
+resizeRenderer();  // Set initial canvas size
 
 // OrbitControls for camera movement
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
@@ -42,9 +38,9 @@ scene.add(celestialGroups);
 
 // Define celestial bodies: Sun, Moon, and Mercury
 const celestialBodies = [
-    { name: 'Sun', radius: 20, speed: 0.02, color: 0xffff00, tilt: Math.PI / 180 * 7, bodyRadius: 0.8 },
-    { name: 'Moon', radius: 6, speed: 0.055, color: 0xcccccc, tilt: Math.PI / 180 * 5, bodyRadius: 0.5 },
-    { name: 'Mercury', radius: 22, speed: 0.047, color: 0xaaaaaa, tilt: Math.PI / 180 * 7, bodyRadius: 0.5 }
+    { name: 'Sun', radius: 20, speed: 0.02, color: 0xffff00, tilt: Math.PI / 180 * 7, bodyRadius: 0.8 }, // Small sphere for Sun
+    { name: 'Moon', radius: 6, speed: 0.055, color: 0xcccccc, tilt: Math.PI / 180 * 5, bodyRadius: 0.5 }, // Small sphere for Moon
+    { name: 'Mercury', radius: 22, speed: 0.047, color: 0xaaaaaa, tilt: Math.PI / 180 * 7, bodyRadius: 0.5 } // Small sphere for Mercury
 ];
 
 // Object to hold planet meshes for easy reference during movement
@@ -91,7 +87,7 @@ celestialBodies.forEach(body => {
     const planetGeometry = new THREE.SphereGeometry(body.bodyRadius, 32, 32);
     const planetMaterial = new THREE.MeshBasicMaterial({ color: body.color });
     const planetMesh = new THREE.Mesh(planetGeometry, planetMaterial);
-    planetMesh.position.set(body.radius, 0, 0); 
+    planetMesh.position.set(body.radius, 0, 0); // Start at the edge of the orbit
     bodyGroup.add(planetMesh);
 
     // Store reference for movement updates
@@ -102,12 +98,13 @@ celestialBodies.forEach(body => {
 function createHippopede(group, radius, tilt, speed) {
     const hippopedeGeometry = new THREE.BufferGeometry();
     const points = [];
-    const angleStep = Math.PI / 180;
+    const angleStep = Math.PI / 180; // Step size in radians
 
+    // Generate points for the hippopede (figure-eight curve)
     for (let t = 0; t < 2 * Math.PI; t += angleStep) {
-        const x = radius * Math.cos(t) + 0.5 * Math.sin(2 * t);
+        const x = radius * Math.cos(t) + 0.5 * Math.sin(2 * t); // Slightly oscillating path
         const y = radius * Math.sin(t) * Math.sin(tilt);
-        const z = radius * Math.sin(2 * t) * Math.cos(tilt);
+        const z = radius * Math.sin(2 * t) * Math.cos(tilt); // Adjust for inclination
 
         points.push(x, y, z);
     }
@@ -121,30 +118,66 @@ function createHippopede(group, radius, tilt, speed) {
 // Update planet positions along the hippopede paths over time
 let time = 0;
 function updatePlanetPositions() {
-    time += params.speedFactor;
+    time += params.speedFactor; // Ensure time progresses with each frame
 
     Object.keys(planetObjects).forEach(name => {
         const planet = planetObjects[name];
-        const t = time * planet.speed;
+        const t = time * planet.speed; // Calculate time-dependent position
 
+        // Use the same equations from the hippopede generation for movement
         const x = planet.radius * Math.cos(t) + 0.5 * Math.sin(2 * t);
         const y = planet.radius * Math.sin(t) * Math.sin(planet.tilt);
         const z = planet.radius * Math.sin(2 * t) * Math.cos(planet.tilt);
 
-        planet.mesh.position.set(x, y, z);
-        planet.label.position.set(x + 3, y, z);
+        planet.mesh.position.set(x, y, z); // Update planet position
+        planet.label.position.set(x + 3, y, z); // Make the label follow the planet
     });
 }
 
-// Animate Function
+// Parameters for the new model (nested spheres)
+const radius3 = 3; // Radius for third sphere rotation
+const radius4 = 1.5; // Radius for fourth sphere rotation, to create the figure-eight shape
+const speed3 = 0.02; // Speed of rotation for third sphere
+const speed4 = -0.02; // Opposite rotation for the fourth sphere
+
+// Add nested spheres to the scene
+const sphereGeometry = new THREE.SphereGeometry(0.1, 32, 32);
+const eclipticSphere = new THREE.Mesh(sphereGeometry, new THREE.MeshBasicMaterial({ color: 0x0000ff }));
+const thirdSphere = new THREE.Mesh(sphereGeometry, new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
+const fourthSphere = new THREE.Mesh(sphereGeometry, new THREE.MeshBasicMaterial({ color: 0xff0000 }));
+scene.add(eclipticSphere, thirdSphere, fourthSphere);
+
+// White point for the planet (the celestial body tracing the hippopede)
+const planetGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+const planet = new THREE.Mesh(planetGeometry, new THREE.MeshBasicMaterial({ color: 0xffffff }));
+scene.add(planet);
+
+// Animation function
 function animate() {
     requestAnimationFrame(animate);
+
+    // Update third sphere rotation (around ecliptic sphere)
+    angle3 += speed3;
+    thirdSphere.position.set(radius3 * Math.cos(angle3), radius3 * Math.sin(angle3), 0);
+
+    // Update fourth sphere rotation (around third sphere)
+    angle4 += speed4;
+    fourthSphere.position.set(
+        thirdSphere.position.x + radius4 * Math.cos(angle4),
+        thirdSphere.position.y,
+        radius4 * Math.sin(angle4)
+    );
+
+    // Position the planet on the hippopede path
+    planet.position.set(fourthSphere.position.x, fourthSphere.position.y, fourthSphere.position.z);
+
+    // Update the planet positions for Eudoxus's model
     updatePlanetPositions();
+
     controls.update();
     renderer.render(scene, camera);
 }
 
-// Start animation
 animate();
 
 // Handle window resize
@@ -154,7 +187,7 @@ window.addEventListener('resize', () => {
 
 // Function to resize the canvas when window is resized
 function resizeRenderer() {
-    const width = window.innerWidth - 300;
+    const width = window.innerWidth - 300; // Sidebar is 300px wide
     const height = window.innerHeight;
     renderer.setSize(width, height);
     camera.aspect = width / height;
