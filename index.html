@@ -6,36 +6,26 @@
     <title>Eudoxus Model</title>
     <link href="https://fonts.googleapis.com/css?family=EB+Garamond" rel="stylesheet">
     <style>
+        /* Existing CSS code */
         body {
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
             font-family: 'EB Garamond', serif;
             background-color: white;
         }
-
-        /* Remove the landing page section */
-
-        /* Eudoxus Model Page */
+        
         #eudoxus-page {
-            display: flex; /* Set to flex by default */
-            flex: 1;
+            display: flex;
             flex-direction: row;
-            margin: 0;
-            padding: 0;
+            height: 100vh;
         }
 
         .info-sidebar {
             width: 400px;
             background-color: #03396c;
             padding: 20px;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
             color: #FFFFFF;
             font-size: 20px;
             overflow-y: auto;
-            height: 100vh;
-            position: relative;
         }
 
         .render-area {
@@ -44,13 +34,20 @@
             align-items: center;
             justify-content: center;
             background-color: #000;
-            margin: 0;
-            padding: 0;
             height: 100vh;
         }
 
         canvas {
             display: block;
+        }
+
+        /* New additional content section styling */
+        #additional-content {
+            padding: 50px;
+            text-align: center;
+            background-color: #f5f5f5;
+            color: #333;
+            font-size: 24px;
         }
     </style>
 </head>
@@ -61,16 +58,21 @@
     <div class="info-sidebar" id="eudoxus-info">
         <h2>Eudoxus' Planetary System</h2>
         <p>Eudoxus of Cnidus proposed a model of the solar system using homocentric spheres...</p>
-        <!-- Additional content can be added here -->
     </div>
     <div class="render-area" id="render-area"></div>
 </div>
 
-<!-- Load Three.js from CDN -->
+<!-- New Section for Additional Content -->
+<div id="additional-content">
+    <h2>Learn More About Eudoxus and Ancient Astronomy</h2>
+    <p>Explore further into ancient astronomical models and the history of celestial navigation...</p>
+</div>
+
+<!-- Load Three.js and OrbitControls -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.rawgit.com/mrdoob/three.js/r128/examples/js/controls/OrbitControls.js"></script>
 
-<!-- Link to the external JavaScript file for the models -->
+<!-- Link to external JavaScript file -->
 <script src="scripts.js"></script>
 
 </body>
