@@ -26,7 +26,7 @@ scene.add(ambientLight);
 // Earth's Static Mesh with Texture
 const textureLoader = new THREE.TextureLoader();
 const earthGeometry = new THREE.SphereGeometry(params.earthRadius, 64, 64);
-textureLoader.load('land_ocean_ice_8192.png', (texture) => {
+textureLoader.load('path_to_earth_texture.jpg', (texture) => {
     const earthMaterial = new THREE.MeshStandardMaterial({ map: texture });
     const earthMesh = new THREE.Mesh(earthGeometry, earthMaterial);
     scene.add(earthMesh);
@@ -38,9 +38,9 @@ scene.add(celestialGroups);
 
 // Define celestial bodies: Sun, Moon, and Mercury
 const celestialBodies = [
-    { name: 'Sun', radius: 20, speed: 0.02, color: 0xffff00, tilt: Math.PI / 180 * 7, bodyRadius: 0.8 },
-    { name: 'Moon', radius: 6, speed: 0.055, color: 0xcccccc, tilt: Math.PI / 180 * 5, bodyRadius: 0.5 },
-    { name: 'Mercury', radius: 22, speed: 0.047, color: 0xaaaaaa, tilt: Math.PI / 180 * 7, bodyRadius: 0.5 }
+    { name: 'Sun', radius: 20, speed: 0.02, color: 0xffff00, tilt: Math.PI / 180 * 7, bodyRadius: 0.8 }, // Small sphere for Sun
+    { name: 'Moon', radius: 6, speed: 0.055, color: 0xcccccc, tilt: Math.PI / 180 * 5, bodyRadius: 0.5 }, // Small sphere for Moon
+    { name: 'Mercury', radius: 22, speed: 0.047, color: 0xaaaaaa, tilt: Math.PI / 180 * 7, bodyRadius: 0.5 } // Small sphere for Mercury
 ];
 
 // Object to hold planet meshes for easy reference during movement
