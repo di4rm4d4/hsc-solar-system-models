@@ -5,6 +5,13 @@ window.addEventListener('load', () => {
     initEudoxusModels();
 });
 
+// Define celestial bodies globally
+const celestialBodies = [
+    { name: 'Sun', radius: 20, speed: 0.02, color: 0xffff00, tilt: Math.PI / 180 * 7, bodyRadius: 1 },
+    { name: 'Moon', radius: 8, speed: 0.055, color: 0xcccccc, tilt: Math.PI / 180 * 5, bodyRadius: 0.6 },
+    { name: 'Mercury', radius: 15, speed: 0.04, color: 0xaaaaaa, tilt: Math.PI / 180 * 7, bodyRadius: 0.5 }
+];
+
 // Function to initialize individual Eudoxus models for each celestial body
 function initEudoxusModels() {
     const renderArea = document.getElementById('render-area-eudoxus');
@@ -17,13 +24,7 @@ function initEudoxusModels() {
         tiltAdjustments: [Math.PI / 20, Math.PI / 10, Math.PI / 15, Math.PI / 25]
     };
 
-    // Celestial body data, each with unique radius, speed, and tilt properties
-    const celestialBodies = [
-        { name: 'Sun', radius: 20, speed: 0.02, color: 0xffff00, tilt: Math.PI / 180 * 7, bodyRadius: 1 },
-        { name: 'Moon', radius: 8, speed: 0.055, color: 0xcccccc, tilt: Math.PI / 180 * 5, bodyRadius: 0.6 },
-        { name: 'Mercury', radius: 15, speed: 0.04, color: 0xaaaaaa, tilt: Math.PI / 180 * 7, bodyRadius: 0.5 }
-    ];
-
+    // Loop through each celestial body and create its model
     celestialBodies.forEach(body => {
         createCelestialModel(renderArea, body, params);
     });
