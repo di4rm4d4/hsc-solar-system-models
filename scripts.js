@@ -130,66 +130,26 @@ function updatePlanetPositions() {
         const z = planet.radius * Math.sin(2 * t) * Math.cos(planet.tilt);
 
         planet.mesh.position.set(x, y, z); // Update planet position
-        planet.label.position.set(x + 3, y, z); // Make the label follow the planet
+        planet.label.position.set(x + 3, y, z); // Update label position
     });
 }
 
-// Parameters for the new model (nested spheres)
-const radius3 = 3; // Radius for third sphere rotation
-const radius4 = 1.5; // Radius for fourth sphere rotation, to create the figure-eight shape
-const speed3 = 0.02; // Speed of rotation for third sphere
-const speed4 = -0.02; // Opposite rotation for the fourth sphere
-
-// Add nested spheres to the scene
-const sphereGeometry = new THREE.SphereGeometry(0.1, 32, 32);
-const eclipticSphere = new THREE.Mesh(sphereGeometry, new THREE.MeshBasicMaterial({ color: 0x0000ff }));
-const thirdSphere = new THREE.Mesh(sphereGeometry, new THREE.MeshBasicMaterial({ color: 0x00ff00 }));
-const fourthSphere = new THREE.Mesh(sphereGeometry, new THREE.MeshBasicMaterial({ color: 0xff0000 }));
-scene.add(eclipticSphere, thirdSphere, fourthSphere);
-
-// White point for the planet (the celestial body tracing the hippopede)
-const planetGeometry = new THREE.SphereGeometry(0.05, 16, 16);
-const planet = new THREE.Mesh(planetGeometry, new THREE.MeshBasicMaterial({ color: 0xffffff }));
-scene.add(planet);
-
-// Animation function
-function animate() {
-    requestAnimationFrame(animate);
-
-    // Update third sphere rotation (around ecliptic sphere)
-    angle3 += speed3;
-    thirdSphere.position.set(radius3 * Math.cos(angle3), radius3 * Math.sin(angle3), 0);
-
-    // Update fourth sphere rotation (around third sphere)
-    angle4 += speed4;
-    fourthSphere.position.set(
-        thirdSphere.position.x + radius4 * Math.cos(angle4),
-        thirdSphere.position.y,
-        radius4 * Math.sin(angle4)
-    );
-
-    // Position the planet on the hippopede path
-    planet.position.set(fourthSphere.position.x, fourthSphere.position.y, fourthSphere.position.z);
-
-    // Update the planet positions for Eudoxus's model
-    updatePlanetPositions();
-
-    controls.update();
-    renderer.render(scene, camera);
-}
-
-animate();
-
-// Handle window resize
-window.addEventListener('resize', () => {
-    resizeRenderer();
-});
-
-// Function to resize the canvas when window is resized
+// Resize renderer based on window dimensions
 function resizeRenderer() {
-    const width = window.innerWidth - 300; // Sidebar is 300px wide
+    const width = window.innerWidth - 300; // Subtract sidebar width
     const height = window.innerHeight;
     renderer.setSize(width, height);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
 }
+
+// Animation loop
+function animate() {
+    requestAnimationFrame(animate);
+    controls.update(); // Handle camera interaction
+    updatePlanetPositions(); // Move planets
+    renderer.render(scene, camera); // Render the scene
+}
+
+window.addEventListener('resize', resizeRenderer);
+animate();
