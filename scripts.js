@@ -113,6 +113,16 @@ function createHippopede(group, radius, tilt, speed) {
     group.add(hippopedeLine);
 }
 
+// Get the slider element and the speed value display
+const speedSlider = document.getElementById('speed-slider');
+const speedValue = document.getElementById('speed-value');
+
+// Update params.speedFactor when the slider value changes
+speedSlider.addEventListener('input', () => {
+    params.speedFactor = parseFloat(speedSlider.value);
+    speedValue.textContent = speedSlider.value;
+});
+
 let time = 0;
 function updatePlanetPositions() {
     time += params.speedFactor; // time progression - progresses with each frame

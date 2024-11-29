@@ -16,7 +16,8 @@
             background-color: #03396c;
             padding: 20px;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-            font-family: 'EB Garamond', font size: 20px;
+            font-family: 'EB Garamond';
+            font-size: 16px;
             overflow-y: auto;
             color: #FFFFFF;
         }
@@ -44,6 +45,9 @@
         <p>The Moon exhibits a hippopede-like orbit due to its inclination and rotating spheres...</p>
         <h4>Mercury</h4>
         <p>Mercury's motion is represented by a figure-eight hippopede pattern...</p>
+        <h3>Adjust Planet Speed</h3>
+        <input type="range" id="speed-slider" min="0.001" max="0.02" step="0.001" value="0.005">
+        <label for="speed-slider">Speed Factor: <span id="speed-value">0.005</span></label>
     </div>
 
     <div id="render-area"></div>
